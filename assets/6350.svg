@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="249.408" height="225.494" viewBox="0 0 249.408 225.494">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_1675" data-name="Rectangle 1675" width="238.542" height="99.784" transform="translate(0 0)"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectangle_1676" data-name="Rectangle 1676" width="238.542" height="99.784"/>
+    </clipPath>
+  </defs>
+  <g id="_6396_Converted_" data-name="6396 [Converted]" transform="matrix(-0.788, 0.616, -0.616, -0.788, 249.408, 78.631)" opacity="0.44">
+    <g id="Group_3099" data-name="Group 3099" transform="translate(0.001 0)" clip-path="url(#clip-path)">
+      <g id="Group_3084" data-name="Group 3084" transform="translate(79.179 7.484)">
+        <path id="Path_11320" data-name="Path 11320" d="M19.562,0h-.19a.211.211,0,0,0,0,.423h0c.254,0,.509,0,.756.006a19.273,19.273,0,0,1,18.6,18.142A19.187,19.187,0,0,1,6.756,33.855,19.038,19.038,0,0,1,.422,20.617.211.211,0,0,0,0,20.64,19.6,19.6,0,0,0,20.624,39.16,19.594,19.594,0,0,0,20.143.007C19.953,0,19.758,0,19.562,0Z" transform="translate(0 0)" fill="#141515" stroke="#fff" stroke-width="1" opacity="0.5"/>
+      </g>
+      <g id="Group_3088" data-name="Group 3088" transform="translate(34.616 36.238)">
+        <path id="Path_11328" data-name="Path 11328" d="M1.554,0A1.554,1.554,0,1,0,3.107,1.555,1.556,1.556,0,0,0,1.554,0Zm0,2.685a1.131,1.131,0,1,1,1.13-1.13A1.132,1.132,0,0,1,1.554,2.685Z" transform="translate(0 0)" fill="#141515" opacity="0.1"/>
+      </g>
+    </g>
+    <g id="Group_3100" data-name="Group 3100" transform="translate(0 0)" clip-path="url(#clip-path-2)">
+      <path id="Path_11346" data-name="Path 11346" d="M0,5.228c-.005,1.14,3.32,17.321,11.47,29.829,7.313,11.211,20.819,16.06,33.86,4.984,13.976-11.87,27.2-15.013,38.435-14.076,11.092.937,19.51,7.883,23.543,12.532,8.745,10.043,17.8,1.445,11.793-12.675-2.818-6.564-7.589-7.743-15.424-7.18-8.191.588-19.851,4.13-36.914,3.646C50.307,21.81,31.132,17.3,19.477,9.464,7.065,1.114-.022-4.708,0,5.228Z" transform="translate(-12.91 -4.192)" fill="#fff" opacity="0.8"/>
+    </g>
+  </g>
+</svg>
