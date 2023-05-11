@@ -13,19 +13,18 @@ class ApiServiceForGetOrders {
 
 
     final response = await http.get(Uri.parse('${baseUrl}customerOrders/${id}'));
-    // print(object)
-    // print('${baseUrl}customerOrders/$id');
+
 
     final String res = response.body;
     if (res != null) {
       try {
-        print(res);
         final jsonData = json.decode(res) as Map<String, dynamic>?;
         final ordersJson = jsonData?['orders'] as List<dynamic>?;
 
         if (ordersJson != null) {
-          final List<Order> orders =
-          ordersJson.map((orderJson) => Order.fromJson(orderJson)).toList();
+          // print(ordersJson);
+          final List<Order> orders = ordersJson.map((orderJson) => Order.fromJson(orderJson)).toList();
+          // print(orders[0].username);
           return orders;
         }
       } catch (e) {

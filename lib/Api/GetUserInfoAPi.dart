@@ -15,7 +15,7 @@ class ApiServiceForGetUserInfo {
     String id = prefs.getString("id").toString();
     String URL = "${baseUrl}customer/${id}";
     // String id = prefs.getString("id").toString();
-    print(id);
+    // print(id);
     String token = prefs.getString("token").toString();
     final response = await http.get(Uri.parse(URL));
     // final response = await http.post(Uri.parse(URL), headers: {"Content-Type": "application/json"}, body: json.encode(
@@ -29,7 +29,7 @@ class ApiServiceForGetUserInfo {
       try {
 
         final jsonData = json.decode(res) as Map<String, dynamic>;
-        print(jsonData);
+        // print(jsonData);
 
          prefs.setString("firstname", jsonData["firstname"]).toString();
          prefs.setString("lastname", jsonData["lastname"]).toString();
@@ -38,6 +38,7 @@ class ApiServiceForGetUserInfo {
          prefs.setString("city", jsonData["city"]);
         prefs.setString("dateofbirth", jsonData["dateofbirth"]);
         prefs.setString("createdAt", jsonData["createdAt"]);
+        prefs.setString("city", jsonData["city"]);
 
 
         return User.fromJson(jsonData);

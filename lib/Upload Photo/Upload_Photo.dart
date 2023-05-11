@@ -9,7 +9,13 @@ import 'package:technician_customer_side/Upload%20Photo/Second_Upload_Photo.dart
 
 class Upload_Photo extends StatefulWidget {
   String id;
-  Upload_Photo({Key? key,required this.id}) : super(key: key);
+  final String type;
+  final String username;
+  final String day;
+  final String time;
+  final String date;
+  final String ammount;
+  Upload_Photo({Key? key,required this.id, required this.type, required this.username, required this.day, required this.time, required this.date, required this.ammount}) : super(key: key);
 
   @override
   State<Upload_Photo> createState() => _Upload_PhotoState();
@@ -29,7 +35,7 @@ class _Upload_PhotoState extends State<Upload_Photo> {
       });
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-        return Second_Upload_Photo(image: selectedImage ,id : widget.id);
+        return Second_Upload_Photo(image: selectedImage,id : widget.id, type: widget.type, username: widget.username, day: widget.day, time: widget.time, date: widget.date, ammount: widget.ammount,);
       }));
     }
 
@@ -46,7 +52,7 @@ class _Upload_PhotoState extends State<Upload_Photo> {
       });
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-        return Second_Upload_Photo(image: selectedImage,id : widget.id);
+        return Second_Upload_Photo(image: selectedImage,id : widget.id, type: widget.type, username: widget.username, day: widget.day, time: widget.time, date: widget.date, ammount: widget.ammount,);
       }));
     }
   }

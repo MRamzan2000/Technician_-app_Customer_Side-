@@ -42,9 +42,13 @@ dependencies:
   image_picker: ^0.8.7+3
   modal_progress_hud_nsn: ^0.4.0
   google_maps_flutter: ^2.2.5
-  geolocator: ^9.0.2
+  geocoder:
+  flutter_dialpad: ^1.0.5
   location: ^4.4.0
+  syncfusion_flutter_calendar: ^21.1.41
   socket_io_client:
+  twilio_flutter: ^0.0.9
+  google_maps_flutter_web: ^0.4.0+8
 
 dev_dependencies:
   flutter_test:

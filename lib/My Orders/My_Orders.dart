@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dialpad/flutter_dialpad.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_customer_side/My%20Orders/Second_My_Orders.dart';
-
+import '../Api/ApiServiceoforCancellingOrders.dart';
 import '../Api/GetOrdersbyid.dart';
 import '../Meesages/Messages/ChatScreen.dart';
 import '../Models/OrdersModels.dart';
@@ -19,13 +23,15 @@ class _My_OrdersState extends State<My_Orders> {
 
 
   @override
-  void initState(){
+  initState() {
     super.initState();
-
     inititialize();
-
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      getActiveOrders();
+    });
 
   }
+
   String myid = "";
 
   inititialize() async {
@@ -36,20 +42,37 @@ class _My_OrdersState extends State<My_Orders> {
 
 
   }
+  int orders_length=0;
 
+  Future<void> getActiveOrders() async{
+    List<Order> dataModel = await ApiServiceForGetOrders.getOrders() as List<Order>;
 
+    if (!mounted) return;
 
+    setState(() {
+      orders_length=dataModel.length;
+
+    });
+    _streamController.sink.add(dataModel);
+  }
+
+  StreamController< List<Order> > _streamController = StreamController();
+  @override
+  void dispose() {
+    super.dispose();
+    _streamController.close();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           Align(
             alignment: Alignment.topLeft,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: Color(0xfff8cdaa),
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(32),
@@ -61,46 +84,28 @@ class _My_OrdersState extends State<My_Orders> {
                         offset: Offset(1.0, 2.0))
                   ]),
               height: 30,
-              width: MediaQuery.of(context).size.width / 2.1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          height: 20,
-                          width: 20,
-                          child: SvgPicture.asset(
-                            "assets/Back arrow.svg",
-                            fit: BoxFit.scaleDown,
-                          )),
-                    ),
-                    Text(
+              width: MediaQuery.of(context).size.width / 2.5,
+              child: const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Center(
+                    child: Text(
                       "My Orders",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(fontSize: 17, color: Colors.black),
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
           Expanded(
             child: StreamBuilder<List<Order>>(
-              stream: Stream.fromFuture(ApiServiceForGetOrders.getOrders()),
+              stream: _streamController.stream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final orders = snapshot.data!;
-
                   if(orders.isEmpty){
-                    return Center(
+                    return const Center(
                       child: Text("No Orders Yet"),
                     );
                   }
@@ -109,45 +114,40 @@ class _My_OrdersState extends State<My_Orders> {
                     itemCount: orders.length,
                     itemBuilder: (context, index) {
                       final order = orders[index];
-                      print(order.id);
                       String timestamp = order.timestamp.toString();
                       DateTime dateTime = DateTime.parse(timestamp);
-                      String date =
-                          "${dateTime.year}-${dateTime.month}-${dateTime.day}";
-                      String time =
-                          "${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+                      String date =  "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+                      String time =  "${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
                       return InkWell(
                         onTap: (){
-                          print(order.username);
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (BuildContext context) {
-                            return Order_Detail(id:  order.seller.toString(),);
+                            return Order_Detail(id:  order.seller.id.toString(), amount: order.amount, updatedamount: order.updatedamount, type: order.type, orderid: order.id, status: order.status,) ;
                           }));
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 10),
+                              horizontal: 20, vertical: 10),
                           child: Container(
                             decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: order.updatedamount==null?Colors.white:Colors.red.shade100,
                                 borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Colors.grey,
                                     blurRadius: 3,
                                     offset: Offset(1.0, 2.0),
                                   )
                                 ]),
-                            height: 110,
-                            // width: MediaQuery.of(context).size.width / 1.1,
+                            height: 130,
                             child: Row(
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Color(0xfff8cdaa),
+                                    color: const Color(0xfff8cdaa),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  height: 105,
+                                  height: 120,
                                   width: MediaQuery.of(context).size.width / 3.1,
                                   child: SvgPicture.asset(
                                     "assets/minisplit-svgrepo-com.svg",
@@ -168,7 +168,7 @@ class _My_OrdersState extends State<My_Orders> {
                                           children: [
                                             Text(
                                               order.username.toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 10,
                                                   color: Colors.black),
                                             ),
@@ -177,13 +177,6 @@ class _My_OrdersState extends State<My_Orders> {
                                                 InkWell(
                                                   onTap: () {
 
-                                                    // Navigator.of(context).push(
-                                                    //     MaterialPageRoute(
-                                                    //         builder:
-                                                    //             (BuildContext
-                                                    //                 context) {
-                                                    //   return Person_1();
-                                                    // }));
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -191,7 +184,7 @@ class _My_OrdersState extends State<My_Orders> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(100),
-                                                        boxShadow: [
+                                                        boxShadow: const [
                                                           BoxShadow(
                                                               color:
                                                                   Colors.grey,
@@ -203,11 +196,11 @@ class _My_OrdersState extends State<My_Orders> {
                                                     width: 25,
                                                     child: IconButton(
                                                       onPressed: (){
-                                                        print(orders[index].seller.toString());
+                                                        // print(orders[index].seller.toString());
                                                         // print(orders[index].sellerId);
                                                         Navigator.of(context)
                                                             .push(MaterialPageRoute(builder: (BuildContext context) {
-                                                          return ChatScreen(myUserId:myid.toString(),otherUserId: orders[index].seller.id.toString(),);
+                                                          return ChatScreen(myUserId:myid.toString(),otherUserId: orders[index].seller.id.toString(), name: orders[index].username,);
                                                         }));
                                                       },
                                                       icon:  SvgPicture.asset(
@@ -217,16 +210,10 @@ class _My_OrdersState extends State<My_Orders> {
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(width: 5),
+                                                const SizedBox(width: 5),
                                                 InkWell(
-                                                  onTap: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                      return Second_My_Orders();
-                                                    }));
+                                                  onTap: () async {
+
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -234,7 +221,7 @@ class _My_OrdersState extends State<My_Orders> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(100),
-                                                        boxShadow: [
+                                                        boxShadow: const [
                                                           BoxShadow(
                                                               color:
                                                                   Colors.grey,
@@ -262,24 +249,37 @@ class _My_OrdersState extends State<My_Orders> {
                                                   3,
                                         ),
                                         SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Split Unit Clean",
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.black),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              "${order.amount.toString()} SR",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Color(0xffF89F5B)),
-                                            )
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 10),
+                                          child: Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  "${order.type.toString()}",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                              // SizedBox(width: 10),
+                                              Text(
+                                                "${order.amount.toString()} SR",
+                                                style: const TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xffF89F5B)),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        SizedBox(height: 12),
+                                        // ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          "${order.status}",
+                                          style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Color(0xffF89F5B)),
+                                        ),
+                                        SizedBox(height: 4),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -307,7 +307,7 @@ class _My_OrdersState extends State<My_Orders> {
                                                           AlertDialog(
                                                         title: Container(
                                                             decoration:
-                                                                BoxDecoration(
+                                                                const BoxDecoration(
                                                               color: Colors.white,
                                                               borderRadius:
                                                                   BorderRadius
@@ -325,7 +325,19 @@ class _My_OrdersState extends State<My_Orders> {
                                                                   child:
                                                                       ElevatedButton(
                                                                           onPressed:
-                                                                              () {},
+                                                                              () {
+                                                                                ApiServiceForCancellingOrder.cancelorder(order.id).then((value) {
+                                                                                  print(value.message);
+                                                                                  Navigator.of(context).pop();
+                                                                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                                                    content: Text('Order Cancel Successfully!'),
+
+                                                                                  ));
+
+
+
+                                                                                });
+                                                                              },
                                                                           style: ElevatedButton.styleFrom(
                                                                               primary:
                                                                                   Color(0xffFFFFFF),
@@ -345,7 +357,11 @@ class _My_OrdersState extends State<My_Orders> {
                                                                   child:
                                                                       ElevatedButton(
                                                                           onPressed:
-                                                                              () {},
+                                                                              () {
+                                                                                Navigator.of(context).pop();
+
+                                                                              }
+                                                                          ,
                                                                           style: ElevatedButton.styleFrom(
                                                                               primary:
                                                                                   Color(0xff9C3587),
@@ -364,7 +380,7 @@ class _My_OrdersState extends State<My_Orders> {
                                                   },
                                                   style: ElevatedButton.styleFrom(
                                                       primary: Color(0xffFFFFFF),
-                                                      shape: RoundedRectangleBorder(
+                                                      shape: const RoundedRectangleBorder(
                                                           borderRadius:
                                                               BorderRadius.only(
                                                                   topLeft: Radius
@@ -373,7 +389,7 @@ class _My_OrdersState extends State<My_Orders> {
                                                                   bottomLeft: Radius
                                                                       .circular(
                                                                           32)))),
-                                                  child: Text(
+                                                  child: const Text(
                                                     "Cancel",
                                                     style: TextStyle(
                                                         fontSize: 12,
@@ -418,4 +434,5 @@ class _My_OrdersState extends State<My_Orders> {
       ),
     );
   }
+
 }

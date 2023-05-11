@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 class ChatScreen extends StatefulWidget {
   final String myUserId;
   final String otherUserId;
+  final String name;
 
-  ChatScreen({required this.myUserId, required this.otherUserId,});
+  ChatScreen({required this.myUserId, required this.otherUserId,required this.name});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -34,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       try {
         final response = await http.get(
-          Uri.parse('http://192.168.1.14:3000/messages/${widget.myUserId}/${widget.otherUserId}/$_page/?lastMessageId=$_lastMessageId'),
+          Uri.parse('https://dolphin-app-ldyyx.ondigitalocean.app/messages/${widget.myUserId}/${widget.otherUserId}/$_page/?lastMessageId=$_lastMessageId'),
           headers: {"Content-Type": "application/json"},
         );
         final data = jsonDecode(response.body);
@@ -73,19 +74,33 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void connectToServer() {
+  void connectToServer() async{
     try {
+      print("Connecting");
       // Configure socket transports must be specified
-      socket = IO.io('http://192.168.1.14:3000/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
+      socket = IO.io('https://dolphin-app-ldyyx.ondigitalocean.app/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
+
+      socket.onConnect((_) {
+        print('Connected');
+      });
+
+      socket.onConnectError((error) {
+        print('Connection error: $error');
+      });
+
+      socket.onDisconnect((_) => print('Disconnected'));
+
     } catch (e) {
       print("hello");
       print(e.toString());
     }
   }
+
   @override
   void initState() {
     super.initState();
     connectToServer();
+    print("Hello");
     _loadMessages();
     _scrollController.addListener(_scrollListener);
     if (widget.myUserId.compareTo(widget.otherUserId) < 0) {
@@ -203,7 +218,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 )),
                           ),
                           Text(
-                            "Person 1",
+                            widget.name,
                             style:
                             TextStyle(fontSize: 16, color: Colors.black),
                           )

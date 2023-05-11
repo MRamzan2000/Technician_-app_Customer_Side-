@@ -1,9 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Bottom bar/Bottom_Bar.dart';
+import '../Sign In/Sign_In.dart';
 
 class MapSample extends StatefulWidget {
   const MapSample({Key? key}) : super(key: key);
@@ -20,15 +23,29 @@ class MapSampleState extends State<MapSample> {
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData _locationData;
+
+  String id = "";
   @override
   void initState() {
     super.initState();
-    _checkLocationPermission();
     setState(() {
-
+      _checkLocationPermission();
     });
+    inititialize();
   }
 
+  String myid = "";
+
+  inititialize() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      myid = prefs.getString("id") ?? "";
+    });
+
+
+  }
+  int n=-1;
+  String _address="No Address";
   Future<void> _checkLocationPermission() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
@@ -37,7 +54,6 @@ class MapSampleState extends State<MapSample> {
         return;
       }
     }
-
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -51,7 +67,22 @@ class MapSampleState extends State<MapSample> {
         });
       }
     }
+    else{
+      _locationData = await location.getLocation();
+      longitude = _locationData.longitude!;
+      latitude = _locationData.latitude!;
+      final coordinates = new Coordinates(
+          latitude, longitude);
+      var addresses = await Geocoder.local.findAddressesFromCoordinates(
+          coordinates);
+      var first = addresses.first;
+      setState(()async{
+        print("Longitide:${latitude}");
+        print("Longitide:${longitude}");
+        _address="${first.addressLine}";
 
+      });
+    }
   }
 
   @override
@@ -60,16 +91,15 @@ class MapSampleState extends State<MapSample> {
       body: Stack(
         children: [
           GoogleMap(
-            mapType: MapType.normal,
+            mapType: MapType.none,
             initialCameraPosition: CameraPosition(
-              target: latitude==0.0&&longitude==0.0?LatLng(31.453246, 74.293170):LatLng(latitude, longitude),
+              target: LatLng(latitude, longitude),
               zoom: 14.4746,
             ),
             onMapCreated: (GoogleMapController controller) {
               _controllerCompleter.complete(controller);
             },
-            markers: const LatLng(31.453246, 74.293170) != null
-                ? <Marker>{
+            markers:<Marker>{
               Marker(
                 markerId: const MarkerId("current_location"),
                 position: LatLng(latitude, latitude),
@@ -78,7 +108,7 @@ class MapSampleState extends State<MapSample> {
                   snippet: "This is your current location.",
                 ),
               ),
-            } : <Marker>{},
+            } ,
 
           ),
           Padding(
@@ -121,61 +151,65 @@ class MapSampleState extends State<MapSample> {
                   children: [
                     const SizedBox(height: 20),
                     const Text(
-                      "Select Your Location",
+                      "Your Current Location",
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(32),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 3,
-                                offset: Offset(1.0, 2.0))
-                          ]),
-                      height: 30,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(bottom: 20),
-                            prefixIcon: SvgPicture.asset(
-                              "assets/Service Search.svg",
-                              fit: BoxFit.scaleDown,
-                            ),
-                            hintText: "Type your address here",
-                            hintStyle: TextStyle(
-                                fontSize: 9, color: Color(0xffACACAC))),
-                      ),
-                    ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30,),
+
                     Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset("assets/serviceLocation.svg"),
-                          SizedBox(width: 5),
-                          Text(
-                            "21, Alex Davidson Avenue, Opposite Omegatron, Vicent",
-                            style: TextStyle(fontSize: 10, color: Colors.black),
-                          ),
-                        ],
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Center(
+                        child: Text(
+                          "${_address}",
+                          style: TextStyle(fontSize: 12, color: Colors.black,),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 30,),
                     SizedBox(
                       width: 170,
                       height: 33,
                       child: ElevatedButton(
-                          onPressed: _checkLocationPermission,
+                          onPressed: ()async{
+                            if(_address=="No Address"){
+                              _checkLocationPermission();
+
+                              n=0;
+                            }
+                            else{
+                              if(n==1){
+                                if(myid == ""){
+                                   Navigator.of(context).push(MaterialPageRoute(
+                                       builder: (BuildContext context) {
+                                         return Sign_In();
+                                       }));
+
+
+                                }
+                                else {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                      return Bottom_Bar();
+                                    }));
+                                }
+                              }
+                              else{
+                                n=1;
+                              }
+                            }
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setString('address', _address);
+                            setState(() {
+
+                            });
+                          },
                           style: ElevatedButton.styleFrom(
                               primary: Color(0xff9C3587),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(32))),
                           child: Text(
-                            "Select current address",
+                            _address=="No Address"?"Get yours":"Next",
                             style: TextStyle(fontSize: 11, color: Colors.white),
                           )),
                     ),

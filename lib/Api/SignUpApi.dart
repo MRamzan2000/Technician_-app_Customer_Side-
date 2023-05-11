@@ -9,9 +9,9 @@ class ApiServiceForSignup {
     const String URL = baseUrl + "costumersignup";
     final response = await http.post(Uri.parse(URL), headers: {"Content-Type": "application/json"}, body: json.encode(body));
     final String res = response.body;
-    print(res);
+    // print(res);
     if (res != 'null') {
-      print(res);
+
       try {
         final jsonData = json.decode(res) as Map<String, dynamic>;
         return SignupResponse.fromJson(jsonData);

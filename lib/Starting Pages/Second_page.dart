@@ -116,34 +116,37 @@ class Second_Page extends StatelessWidget {
                       SizedBox(height: 20),
                       Stack(
                         children: [
-                          InkWell(
-                            onTap: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(onTap: (){Navigator.of(context)
-                                  ..push(MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return Third_Page();
-                                      }));},
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffE53F71),
-                                      borderRadius: BorderRadius.circular(100),
+                          SizedBox(
+                            height: 80,
+                            child: InkWell(
+                              onTap: () {},
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(onTap: (){Navigator.of(context)
+                                    ..push(MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return Third_Page();
+                                        }));},
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffE53F71),
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                      height: 50,
+                                      width: 50,
                                     ),
-                                    height: 50,
-                                    width: 50,
                                   ),
-                                ),
-                                Transform.translate(
-                                  offset: Offset(-12, 0),
-                                  child: Text(
-                                    "Next",
-                                    style: TextStyle(
-                                        fontSize: 22, color: Colors.white),
-                                  ),
-                                )
-                              ],
+                                  Transform.translate(
+                                    offset: Offset(-12, 0),
+                                    child: Text(
+                                      "Next",
+                                      style: TextStyle(
+                                          fontSize: 22, color: Colors.white),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           )
                         ],

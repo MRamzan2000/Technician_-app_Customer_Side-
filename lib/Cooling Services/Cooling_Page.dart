@@ -666,7 +666,6 @@ class CoolingPageState extends State<CoolingPage> {
                                 onTap: () {
                                   type="Cooling->Installation->Window Unit";
                                   amount='0';
-
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
                                         return Select_Schedule(
@@ -1180,11 +1179,11 @@ class CoolingPageState extends State<CoolingPage> {
                                 onTap: () {
                                   type="Cooling->Installation->Standing Unit";
                                   amount='0';
-                                  if(count[0]<=3){
-                                    amount=(300*count[0]).toString();
+                                  if(count[3]<=3){
+                                    amount=(300*count[3]).toString();
                                   }
                                   else{
-                                    amount=(350*count[0]).toString();
+                                    amount=(350*count[3]).toString();
                                   }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
@@ -1480,11 +1479,11 @@ class CoolingPageState extends State<CoolingPage> {
                                 onTap: () {
                                   type="Cooling->Cleaning->Split Unit";
                                   amount='0';
-                                  if(count[0]<=3){
-                                    amount=(90*count[0]).toString();
+                                  if(count[4]<=3){
+                                    amount=(90*count[4]).toString();
                                   }
                                   else{
-                                    amount=(110*count[0]).toString();
+                                    amount=(110*count[4]).toString();
                                   }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
@@ -1746,11 +1745,11 @@ class CoolingPageState extends State<CoolingPage> {
                                 onTap: () {
                                   type="Cooling->Cleaning->Window Unit";
                                   amount='0';
-                                  if(count[0]<=3){
-                                    amount=(80*count[0]).toString();
+                                  if(count[5]<=3){
+                                    amount=(80*count[5]).toString();
                                   }
                                   else{
-                                    amount=(100*count[0]).toString();
+                                    amount=(100*count[5]).toString();
                                   }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
@@ -2003,14 +2002,8 @@ class CoolingPageState extends State<CoolingPage> {
                               SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
-                                  type="Cooling->Cleaning->Standing Unit";
+                                  type="Cooling->Cleaning->Cassette Unit";
                                   amount='0';
-                                  if(count[0]<=3){
-                                    amount=(100*count[0]).toString();
-                                  }
-                                  else{
-                                    amount=(120*count[0]).toString();
-                                  }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
                                         return Select_Schedule(
@@ -2019,6 +2012,7 @@ class CoolingPageState extends State<CoolingPage> {
                                           id: widget.id.toString(),
                                         );
                                       }));
+
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -2269,8 +2263,14 @@ class CoolingPageState extends State<CoolingPage> {
                               SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
-                                  type="Cooling->Cleaning->Cassette Unit";
+                                  type="Cooling->Cleaning->Standing Unit";
                                   amount='0';
+                                  if(count[7]<=3){
+                                    amount=(100*count[7]).toString();
+                                  }
+                                  else{
+                                    amount=(120*count[7]).toString();
+                                  }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
                                         return Select_Schedule(
@@ -3071,11 +3071,11 @@ class CoolingPageState extends State<CoolingPage> {
                                 onTap: () {
                                   type="Cooling->Replace->Split Unit";
                                   amount='0';
-                                  if(count[0]<=3){
-                                    amount=(200*count[0]).toString();
+                                  if(count[10]<=3){
+                                    amount=(200*count[10]).toString();
                                   }
                                   else{
-                                    amount=(220*count[0]).toString();
+                                    amount=(220*count[10]).toString();
                                   }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {
@@ -3843,11 +3843,11 @@ class CoolingPageState extends State<CoolingPage> {
                                 onTap: () {
                                   type="Cooling->Replace->Standing Unit";
                                   amount='0';
-                                  if(count[0]<=3){
-                                    amount=(465*count[0]).toString();
+                                  if(count[13]<=3){
+                                    amount=(465*count[13]).toString();
                                   }
                                   else{
-                                    amount=(500*count[0]).toString();
+                                    amount=(500*count[13]).toString();
                                   }
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:technician_customer_side/Select%20Schedule/Select_Schedule.dart'
 import 'package:technician_customer_side/Sign%20In/Sign_In.dart';
 
 import '../Api/SignOutApi.dart';
+import '../Map/map.dart';
 import '../Transactions/Transactions.dart';
 
 class Home_Screen extends StatefulWidget {
@@ -175,23 +176,28 @@ class _Home_ScreenState extends State<Home_Screen> {
                   color: Colors.grey,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Row(
-                  children: [
-                    SvgPicture.asset("assets/location.svg"),
-                    SizedBox(width: 10),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Location",
-                        style:
-                            TextStyle(fontSize: 14, color: Color(0xff233245)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 25),
+              //   child: Row(
+              //     children: [
+              //       SvgPicture.asset("assets/location.svg"),
+              //       SizedBox(width: 10),
+              //       // TextButton(
+              //       //   onPressed: () {
+              //       //     // Navigator.of(context).push(MaterialPageRoute(
+              //       //     //     builder: (BuildContext context) {
+              //       //     //       return MapSample();
+              //       //     //     }));
+              //       //   },
+              //       //   child: Text(
+              //       //     "Location",
+              //       //     style:
+              //       //         TextStyle(fontSize: 14, color: Color(0xff233245)),
+              //       //   ),
+              //       // ),
+              //     ],
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Container(
@@ -229,7 +235,9 @@ class _Home_ScreenState extends State<Home_Screen> {
                                     width: 100,
                                     height: 32,
                                     child: ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
                                         style: ElevatedButton.styleFrom(
                                             primary: Color(0xff9C3587),
                                             shape: RoundedRectangleBorder(
@@ -247,13 +255,14 @@ class _Home_ScreenState extends State<Home_Screen> {
                                     width: 100,
                                     height: 32,
                                     child: ElevatedButton(
-                                        onPressed: () {
+                                        onPressed: () async {
+
+
                                           setState(() {
                                             _loading = true;
                                           });
 
-                                          ApiServiceForSignOut.signOut()
-                                              .then((value) => {
+                                          ApiServiceForSignOut.signOut().then((value) => {
                                                     if (value.message ==
                                                         "Customer logged out successfully")
                                                       {
@@ -425,221 +434,167 @@ class _Home_ScreenState extends State<Home_Screen> {
                       topRight: Radius.circular(50)),
                 ),
                 width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    SizedBox(height: 30),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(32),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 3,
-                              offset: Offset(1.0, 2.0),
-                            )
-                          ]),
-                      height: 40,
-                      width: MediaQuery.of(context).size.width / 1.1,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          prefixIcon: SvgPicture.asset(
-                            "assets/HS search box.svg",
-                            fit: BoxFit.scaleDown,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 30),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(32),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 3,
+                                offset: Offset(1.0, 2.0),
+                              )
+                            ]),
+                        height: 40,
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            prefixIcon: SvgPicture.asset(
+                              "assets/HS search box.svg",
+                              fit: BoxFit.scaleDown,
+                            ),
+                            hintText: "Search any type of services",
+                            hintStyle: TextStyle(
+                                fontSize: 10, color: Color(0xffBAC0C0)),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(top: 5),
                           ),
-                          hintText: "Search any type of services",
-                          hintStyle: TextStyle(
-                              fontSize: 10, color: Color(0xffBAC0C0)),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 5),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 30),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(45),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 3,
-                              offset: Offset(1.0, 2.0),
-                            )
-                          ]),
-                      height: 140,
-                      width: MediaQuery.of(context).size.width / 1.1,
-                      child: Padding(
+                      SizedBox(height: 30),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(45),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 3,
+                                offset: Offset(1.0, 2.0),
+                              )
+                            ]),
+                        height: 140,
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Cleaning Servive",
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    "Lorem ipsum dolor sit amet, consectetu elit, sed\ndo eiusmod tempor Lorem ipsum dolor sit amet,\nconsectetu elit, sed do eiusmod tempor Lorem\nipsum dolor sit amet, consectetu elit, sed do",
+                                    style: TextStyle(
+                                        fontSize: 6, color: Colors.black),
+                                  ),
+                                  SizedBox(height: 5),
+                                  SizedBox(
+                                    width: 100,
+                                    height: 20,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          // Navigator.of(context).push(
+                                          //     MaterialPageRoute(builder:
+                                          //         (BuildContext context) {
+                                          //   return Select_Schedule();
+                                          // }));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Color(0xffF89F5B),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(32))),
+                                        child: Text(
+                                          "Book Now",
+                                          style: TextStyle(
+                                              fontSize: 7, color: Colors.white),
+                                        )),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Color(0xffffd19c),
+                                    borderRadius: BorderRadius.circular(45)),
+                                height: 140,
+                                width: MediaQuery.of(context).size.width / 2.1,
+                                child: SvgPicture.asset(
+                                  "assets/HS clean.svg",
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Padding(
                         padding: const EdgeInsets.only(left: 20),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Book a Service For",
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Cleaning Servive",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Lorem ipsum dolor sit amet, consectetu elit, sed\ndo eiusmod tempor Lorem ipsum dolor sit amet,\nconsectetu elit, sed do eiusmod tempor Lorem\nipsum dolor sit amet, consectetu elit, sed do",
-                                  style: TextStyle(
-                                      fontSize: 6, color: Colors.black),
-                                ),
-                                SizedBox(height: 5),
-                                SizedBox(
-                                  width: 100,
-                                  height: 20,
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        // Navigator.of(context).push(
-                                        //     MaterialPageRoute(builder:
-                                        //         (BuildContext context) {
-                                        //   return Select_Schedule();
-                                        // }));
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Color(0xffF89F5B),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(32))),
-                                      child: Text(
-                                        "Book Now",
-                                        style: TextStyle(
-                                            fontSize: 7, color: Colors.white),
-                                      )),
-                                )
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Color(0xffffd19c),
-                                  borderRadius: BorderRadius.circular(45)),
-                              height: 140,
-                              width: MediaQuery.of(context).size.width / 2.1,
-                              child: SvgPicture.asset(
-                                "assets/HS clean.svg",
-                                fit: BoxFit.scaleDown,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Book a Service For",
-                          style: TextStyle(fontSize: 18, color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(width: 15),
-                          //Electric Services
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return Cooling_Services(
-                                  type: 'Electric',
-                                );
-                              }));
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 120,
-                                  width: 150,
-                                  child: SvgPicture.asset(
-                                    "assets/Electric service.svg",
-                                    fit: BoxFit.scaleDown,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 40,
-                                  width: 150,
-                                  child: Center(
-                                    child: Text(
-                                      "Electric Services",
-                                      style: TextStyle(
-                                          fontSize: 15, color: Colors.black),
+                            SizedBox(width: 15),
+                            //Electric Services
+                            InkWell(
+                              onTap: () async{
+                                final prefs = await SharedPreferences.getInstance();
+                                String address = prefs.getString("address").toString();
+                                if(address==null){
+
+                                }
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                  return Cooling_Services(
+                                    type: 'Electric',
+                                  );
+                                }));
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            offset: Offset(1.0, 2.0),
+                                          )
+                                        ]),
+                                    height: 120,
+                                    width: MediaQuery.of(context).size.width  / 2.5,
+                                    child: SvgPicture.asset(
+                                      "assets/Electric service.svg",
+                                      fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return Cooling_Services(
-                                  type: 'Cooling',
-                                );
-                              }));
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 120,
-                                  width: 150,
-                                  child: SvgPicture.asset(
-                                    "assets/Cooling.svg",
-                                    fit: BoxFit.scaleDown,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                InkWell(
-                                  onTap: () {},
-                                  child: Container(
+                                  SizedBox(height: 8),
+                                  Container(
                                     decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
@@ -653,153 +608,394 @@ class _Home_ScreenState extends State<Home_Screen> {
                                           )
                                         ]),
                                     height: 40,
-                                    width: 150,
+                                    width: MediaQuery.of(context).size.width  / 2.5,
                                     child: Center(
                                       child: Text(
-                                        "Cooling Services",
+                                        "Electric Services",
                                         style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.black),
+                                            fontSize: 15, color: Colors.black),
                                       ),
                                     ),
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 15),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(width: 15),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return Cooling_Services(
-                                  type: 'Plumber',
-                                );
-                              }));
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 120,
-                                  width: 150,
-                                  child: SvgPicture.asset(
-                                    "assets/Plumber service.svg",
-                                    fit: BoxFit.scaleDown,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 40,
-                                  width: 150,
-                                  child: Center(
-                                    child: Text(
-                                      "Plumber Services",
-                                      style: TextStyle(
-                                          fontSize: 15, color: Colors.black),
+                            InkWell(
+                              onTap: () async{
+                                final prefs = await SharedPreferences.getInstance();
+                                String address = prefs.getString("address").toString();
+                                if(address==null){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                            title: Text(
+                                              "Please Update your location"
+                                            ),
+                                            content: Row(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 100,
+                                                  height: 32,
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary:
+                                                          Color(0xffFFFFFF),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  32))),
+                                                      child: Text(
+                                                        "Okay",
+                                                        style: TextStyle(
+                                                            fontSize: 11,
+                                                            color: Color(
+                                                                0xff9C3587)),
+                                                      )),
+                                                ),
+                                              ],
+                                            )),
+                                  );
+                                }
+                                else{
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return Cooling_Services(
+                                          type: 'Cooling',
+                                        );
+                                      }));
+                                }
+
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            offset: Offset(1.0, 2.0),
+                                          )
+                                        ]),
+                                    height: 120,
+                                    width: MediaQuery.of(context).size.width  / 2.5,
+                                    child: SvgPicture.asset(
+                                      "assets/Cooling.svg",
+                                      fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                )
-                              ],
+                                  SizedBox(height: 8),
+                                  InkWell(
+                                    onTap: () async{
+                                      final prefs = await SharedPreferences.getInstance();
+                                      String address = prefs.getString("address").toString();
+                                      if(address==null){
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                  title: Text(
+                                                      "Please Update your location"
+                                                  ),
+                                                  content: Row(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 100,
+                                                        height: 32,
+                                                        child: ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            style: ElevatedButton.styleFrom(
+                                                                primary:
+                                                                Color(0xffFFFFFF),
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                        32))),
+                                                            child: Text(
+                                                              "Okay",
+                                                              style: TextStyle(
+                                                                  fontSize: 11,
+                                                                  color: Color(
+                                                                      0xff9C3587)),
+                                                            )),
+                                                      ),
+                                                    ],
+                                                  )),
+                                        );
+                                      }
+                                      else {
+                                        Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return Cooling_Services(
+                                                type: 'Cooling',
+                                              );
+                                            }));
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(20),
+                                              bottomRight: Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              blurRadius: 3,
+                                              offset: Offset(1.0, 2.0),
+                                            )
+                                          ]),
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width  / 2.5,
+                                      child: Center(
+                                        child: Text(
+                                          "Cooling Services",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return Cooling_Services(
-                                  type: 'Heater',
-                                );
-                              }));
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 120,
-                                  width: 150,
-                                  child: SvgPicture.asset(
-                                    "assets/Heater service.svg",
-                                    fit: BoxFit.scaleDown,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 3,
-                                          offset: Offset(1.0, 2.0),
-                                        )
-                                      ]),
-                                  height: 40,
-                                  width: 150,
-                                  child: Center(
-                                    child: Text(
-                                      "Heater Services",
-                                      style: TextStyle(
-                                          fontSize: 15, color: Colors.black),
+                            SizedBox(width: 15),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(width: 15),
+                            InkWell(
+                              onTap: () async{
+                                final prefs = await SharedPreferences.getInstance();
+                                String address = prefs.getString("address").toString();
+                                if(address==null){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                            title: Text(
+                                                "Please Update your location"
+                                            ),
+                                            content: Row(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 100,
+                                                  height: 32,
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary:
+                                                          Color(0xffFFFFFF),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  32))),
+                                                      child: Text(
+                                                        "Okay",
+                                                        style: TextStyle(
+                                                            fontSize: 11,
+                                                            color: Color(
+                                                                0xff9C3587)),
+                                                      )),
+                                                ),
+                                              ],
+                                            )),
+                                  );
+                                }
+                                else {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return Cooling_Services(
+                                          type: 'Plumber',
+                                        );
+                                      }));
+                                }
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            offset: Offset(1.0, 2.0),
+                                          )
+                                        ]),
+                                    height: 120,
+                              width: MediaQuery.of(context).size.width  / 2.5,
+                                    child: SvgPicture.asset(
+                                      "assets/Plumber service.svg",
+                                      fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                )
-                              ],
+                                  SizedBox(height: 8),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            bottomRight: Radius.circular(20)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            offset: Offset(1.0, 2.0),
+                                          )
+                                        ]),
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width  / 2.5,
+                                    child: Center(
+                                      child: Text(
+                                        "Plumber Services",
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.black),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 15),
-                        ],
+                            InkWell(
+                              onTap: ()async{
+                                final prefs = await SharedPreferences.getInstance();
+                                String address = prefs.getString("address").toString();
+                                if(address==null){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                            title: Text(
+                                                "Please Update your location"
+                                            ),
+                                            content: Row(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 100,
+                                                  height: 32,
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary:
+                                                          Color(0xffFFFFFF),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  32))),
+                                                      child: Text(
+                                                        "Okay",
+                                                        style: TextStyle(
+                                                            fontSize: 11,
+                                                            color: Color(
+                                                                0xff9C3587)),
+                                                      )),
+                                                ),
+                                              ],
+                                            )),
+                                  );
+                                }
+                                else {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return Cooling_Services(
+                                          type: 'Heater',
+                                        );
+                                      }));
+                                }
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            offset: Offset(1.0, 2.0),
+                                          )
+                                        ]),
+                                    height: 120,
+                              width: MediaQuery.of(context).size.width  / 2.5,
+                                    child: SvgPicture.asset(
+                                      "assets/Heater service.svg",
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            bottomRight: Radius.circular(20)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            offset: Offset(1.0, 2.0),
+                                          )
+                                        ]),
+                                    height: 40,
+                                    width: MediaQuery.of(context).size.width  / 2.5,
+                                    child: Center(
+                                      child: Text(
+                                        "Heater Services",
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.black),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 15),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 50),
-                  ],
+                      SizedBox(height: 50),
+                    ],
+                  ),
                 ),
               ),
             )

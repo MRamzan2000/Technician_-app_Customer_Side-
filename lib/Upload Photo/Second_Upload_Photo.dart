@@ -12,8 +12,25 @@ import 'Upload_Photo.dart';
 
 class Second_Upload_Photo extends StatefulWidget {
   final File image;
+  final String type;
+  final String username;
+  final String day;
+  final String time;
+  final String date;
+  final String ammount;
   String id;
-  Second_Upload_Photo({Key? key,required this.image,required this.id}) : super(key: key);
+
+  Second_Upload_Photo(
+      {Key? key,
+      required this.image,
+      required this.id,
+      required this.type,
+      required this.username,
+      required this.day,
+      required this.time,
+      required this.date,
+      required this.ammount})
+      : super(key: key);
 
   @override
   State<Second_Upload_Photo> createState() => _Second_Upload_PhotoState();
@@ -73,11 +90,13 @@ class _Second_Upload_PhotoState extends State<Second_Upload_Photo> {
             ),
           ),
           SizedBox(height: 20),
-          Image.asset(
-            "assets/Image 28.png",
+          // assuming that 'image' is the variable storing the selected image file
+          Image(
+            image: FileImage(widget.image),
             height: MediaQuery.of(context).size.height / 3,
             width: MediaQuery.of(context).size.width / 1.05,
           ),
+
           SizedBox(height: 40),
           SizedBox(
             width: 130,
@@ -86,82 +105,34 @@ class _Second_Upload_PhotoState extends State<Second_Upload_Photo> {
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
                   String id = prefs.getString("id").toString();
-                  print(id);
-                  print(widget.id);
-                  Map<String , dynamic>  body=  {
-
-                      "userId": id.toString(),
-                      "sellerId": widget.id.toString(),
-                      "type": "Heater",
-                      "date": "2023-04-15T09:00:00Z",
-                      "day": "Friday",
-                      "time": "09:00 AM",
-                      "image": widget.image.path,
-                      "amount": "50.00",
-                       "lat" : "10",
-                       "lon" : "10",
-                       "username" : "hello"
+                  String address = prefs.getString("address").toString();
+                  Map<String, dynamic> body = {
+                    "userId": id.toString(),
+                    "sellerId": widget.id.toString(),
+                    "type": widget.type,
+                    "date": widget.date,
+                    "day": widget.day,
+                    "time": widget.time,
+                    "image": widget.image.path,
+                    "amount": widget.ammount,
+                    "address": address,
+                    "username": widget.username
                   };
                   ApiServiceForStoringOrder.storeorder(body).then((value) => {
-                    if(value == true)
-                  {
-                    print("Asd"),
-                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                      return Bottom_Bar();
-                    }))
+                        if (value == true)
+                          {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) {
+                              return Bottom_Bar();
+                            })),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text('Order Request Sent Successfully!'),
 
-                  }else{
-                      print("error")
-                    }
-                  });
-                  // Map<String ,dynamic> body = {
-                  //   "userId": "6439f15ae98af0dc09c16bcf",
-                  //   "sellerId": "643944727c89ea515877c546",
-                  //   "type": "Heater",
-                  //   "date": "2023-04-15T09:00:00Z",
-                  //   "day": "Friday",
-                  //   "time": "09:00 AM",
-                  //   "image": widget.image.path,
-                  //   "amount": "50.00",
-                  //   "lat" : "10",
-                  //   "lon" : "10",
-                  //   "username" : "hello"
-                  // };
-                  // ApiServiceForStoringOrder.storeOrder(body).then((value) => {
-                  //   // print(value.status),
-                  //   if(value.status == "Success"){
-                  //     Navigator.of(context)
-                  //         .push(MaterialPageRoute(builder: (BuildContext context) {
-                  //       return Bottom_Bar();
-                  //     }))
-                  //   }else{
-                  //     showCupertinoDialog(
-                  //       context: context,
-                  //       builder: (BuildContext context) {
-                  //         return CupertinoAlertDialog(
-                  //           title: value.status == null ?  Text(value.message.toString()) : Text(value.status.toString()),
-                  //           content: Text(value.message.toString()),
-                  //           actions: [
-                  //             CupertinoDialogAction(
-                  //               child: Text('Cancel'),
-                  //               onPressed: () {
-                  //                 Navigator.of(context).pop();
-                  //               },
-                  //             ),
-                  //             CupertinoDialogAction(
-                  //               child: Text('OK'),
-                  //               onPressed: () {
-                  //                 // Perform some action
-                  //                 Navigator.of(context).pop();
-                  //               },
-                  //             ),
-                  //           ],
-                  //         );
-                  //       },
-                  //     )
-                  //   }
-                  // });
-
+                            ))
+                          }
+                        else
+                          {print("error")}
+                      });
                 },
                 style: ElevatedButton.styleFrom(
                     primary: Color(0xff9C3587),

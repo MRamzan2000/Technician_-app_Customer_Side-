@@ -5,7 +5,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:technician_customer_side/Api/SignInApi.dart';
 import 'package:technician_customer_side/Bottom%20bar/Bottom_Bar.dart';
 import 'package:technician_customer_side/Sign%20Up/Sign_Up.dart';
-import '../ForgotPass_verify_change_pass/ForgotPass.dart';
+import '../forgotpass_verify_pass/Forget_Password.dart';
 
 class Sign_In extends StatefulWidget {
   const Sign_In({Key? key}) : super(key: key);
@@ -15,6 +15,7 @@ class Sign_In extends StatefulWidget {
 }
 
 class _Sign_InState extends State<Sign_In> {
+
   TextEditingController email = TextEditingController();
   TextEditingController pass = TextEditingController();
   bool _loading = false;
@@ -67,7 +68,7 @@ class _Sign_InState extends State<Sign_In> {
                       child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                            return const ForgotPassword();
+                            return const Forget_Password();
                           }));
                         },
                         child: const Text(
@@ -82,21 +83,14 @@ class _Sign_InState extends State<Sign_In> {
                   height: 30,
                   child: ElevatedButton(
                       onPressed: () {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (BuildContext context) {
-                        //       return Bottom_Bar();
-                        //     }));
+
                         setState(() {
                           _loading = true;
                         });
                         Map<String, dynamic> body = {
 
-                          "email": "imuhammadfaizan@gmail.com",
-                          "password": "xxxxxxxx",
-                          // "email":"inzmamkhan56@gmail.com",
-                          // "password":"assword"
-                          // "email": "immuhamm adfa izan@gmail.com",
-                          // "password": "xxxxxxxx"
+                          "email": email.text,
+                          "password": pass.text,
 
                         };
                         ApiServiceForSignIn.signin(body).then((value) => {
@@ -104,10 +98,11 @@ class _Sign_InState extends State<Sign_In> {
 
                             {
                               print(value.userId),
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return Bottom_Bar();
-                                  })),
+
+                        Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Bottom_Bar()),
+                        ),
                         setState(() {
                         _loading = false;
                         })
@@ -143,10 +138,6 @@ class _Sign_InState extends State<Sign_In> {
                               )
                             }
                        });
-                        // Navigator.of(context).push(
-                        //     MaterialPageRoute(builder: (BuildContext context) {
-                        //   return Bottom_Bar();
-                        // }));
                       },
                       style: ElevatedButton.styleFrom(
                           primary: Color(0xff9C3587),

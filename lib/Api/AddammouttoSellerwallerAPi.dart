@@ -11,7 +11,7 @@ class ApiServiceForAddAmount{
     final response = await  http.post(Uri.parse(URL),headers:{'Content-Type':'Application/json','Accept':'Application/json'},body: json.encode(body));
     final String res = response.body;
     if (res != 'null') {
-      print(res);
+      // print(res);
       try {
         final jsonData = json.decode(res) as Map<String, dynamic>;
         if(jsonData['message']=="Amount added to seller wallet"){

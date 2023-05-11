@@ -44,14 +44,13 @@ class _MessagesState extends State<Messages> {
   Future<void> getActiveOrders() async{
     LastMessages dataModel = await fetchLastMessages(id.toString());
     setState(() {
-
     });
     _streamController.sink.add(dataModel);
   }
 
   Future<LastMessages> fetchLastMessages(String senderId) async {
     final response = await http.get(
-      Uri.parse('http://192.168.1.14:3000/receivers/${id}'),
+      Uri.parse('https://dolphin-app-ldyyx.ondigitalocean.app/receivers/${id}'),
       headers: {"Content-Type": "application/json"},
     );
     print(response.body);
@@ -77,6 +76,7 @@ class _MessagesState extends State<Messages> {
         '_id': messageData['_id'],
         'text': messageData['text'],
         'createdAt': messageData['createdAt'],
+        'receiverName': messageData['receiverName'],
       };
       messagesList.add(messageMap);
     }
@@ -110,22 +110,22 @@ class _MessagesState extends State<Messages> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          height: 20,
-                          width: 20,
-                          child: SvgPicture.asset(
-                            "assets/Back Arrow.svg",
-                            fit: BoxFit.scaleDown,
-                          )),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.of(context).pop();
+                    //   },
+                    //   child: Container(
+                    //       decoration: BoxDecoration(
+                    //         color: Colors.white,
+                    //         borderRadius: BorderRadius.circular(100),
+                    //       ),
+                    //       height: 20,
+                    //       width: 20,
+                    //       child: SvgPicture.asset(
+                    //         "assets/Back Arrow.svg",
+                    //         fit: BoxFit.scaleDown,
+                    //       )),
+                    // ),
                     Text(
                       "Messages",
                       style: TextStyle(fontSize: 16, color: Colors.black),
@@ -184,73 +184,76 @@ class _MessagesState extends State<Messages> {
                             final timestamp = chats[index].createdAt;
                             final dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp!);
                             final formattedDateTime = DateFormat('MMM dd, yyyy hh:mm a').format(dateTime);
-                            return InkWell(
-                              onTap: () async{
-                                print(chats[index]);
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: InkWell(
+                                onTap: () async{
+                                  // print(chats[index].receiverName);
 
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (BuildContext context) {
-                                  return ChatScreen(myUserId: id.toString(),otherUserId: (chats[index].receiverId).toString(),);
-                                }));
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                                    return ChatScreen(myUserId: id.toString(),otherUserId: (chats[index].receiverId).toString(), name: chats[index].receiverName.toString(),);
+                                  }));
 
-                                print("object:  " +  (chats[index].receiverId).toString());
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey, blurRadius: 3, offset: Offset(1.0, 2.0))
-                                ]),
-                                height: 85,
-                                width: MediaQuery.of(context).size.width,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(height: 3),
-                                      Align(
-                                        alignment: Alignment.topRight,
-                                        child: Text(
-                                          "${formattedDateTime}",
-                                          style:
-                                          TextStyle(fontSize: 12, color: Color(0xff3D3D3D)),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: AssetImage("assets/pic.jpg")),
-                                                borderRadius: BorderRadius.circular(100),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0xff2F62BB),
-                                                    blurRadius: 2,
-                                                  )
-                                                ]),
-                                            height: 50,
-                                            width: 50,
+                                  // print("object:  " +  (chats[index].receiverId).toString());
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.grey, blurRadius: 3, offset: Offset(1.0, 2.0))
+                                  ]),
+                                  height: 85,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 3),
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: Text(
+                                            "${formattedDateTime}",
+                                            style:
+                                            TextStyle(fontSize: 12, color: Color(0xff3D3D3D)),
                                           ),
-                                          SizedBox(width: 10),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "${chats[index].receiverId}",
-                                                style: TextStyle(
-                                                    fontSize: 16, color: Color(0xff3D3D3D)),
-                                              ),
-                                              Text(
-                                                "${chats[index].text}",
-                                                style:
-                                                TextStyle(fontSize: 12, color: Colors.black),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      )
-                                    ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: AssetImage("assets/pic.jpg")),
+                                                  borderRadius: BorderRadius.circular(100),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Color(0xff2F62BB),
+                                                      blurRadius: 2,
+                                                    )
+                                                  ]),
+                                              height: 50,
+                                              width: 50,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "${chats[index].receiverName}",
+                                                  style: TextStyle(
+                                                      fontSize: 16, color: Color(0xff3D3D3D)),
+                                                ),
+                                                Text(
+                                                  "${chats[index].text}",
+                                                  style:
+                                                  TextStyle(fontSize: 12, color: Colors.black),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

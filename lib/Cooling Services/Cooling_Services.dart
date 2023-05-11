@@ -214,7 +214,7 @@ class _Cooling_ServicesState extends State<Cooling_Services> {
                       } else {
                         return  Padding(
                           padding:
-                          const EdgeInsets.symmetric(horizontal: 15),
+                          const EdgeInsets.symmetric(horizontal: 15,vertical: 20),
                           child: Row(
                             mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,

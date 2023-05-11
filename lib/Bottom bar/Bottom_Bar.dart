@@ -48,42 +48,48 @@ class _Bottom_BarState extends State<Bottom_Bar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: Container(
-        height: 70,
-        color: Colors.black,
-        child: BottomNavigationBar(
-          // selectedItemColor: Colors.red,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/bottom bar order.svg"),
-              label: 'Order',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/bottom bar home.svg"),
-              label: 'Home',
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        // Disable back button
+        return false;
+      },
+      child: Scaffold(
+        bottomNavigationBar: Container(
+          height: 70,
+          color: Colors.black,
+          child: BottomNavigationBar(
+            // selectedItemColor: Colors.red,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            items: [
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/bottom bar order.svg"),
+                label: 'Order',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/bottom bar home.svg"),
+                label: 'Home',
+              ),
 
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset("assets/bottom bar Account.svg"),
-              label: 'Account',
-            ),
-            BottomNavigationBarItem(
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset("assets/bottom bar Account.svg"),
+                label: 'Account',
+              ),
+              BottomNavigationBarItem(
 
-              icon: Icon(Icons.chat,color: Colors.grey,),
-              label: 'Account',
-            ),
+                icon: Icon(Icons.chat,color: Colors.grey,),
+                label: 'Account',
+              ),
 
 
-          ],
+            ],
+          ),
         ),
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
       ),
     );
   }

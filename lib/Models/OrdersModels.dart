@@ -9,13 +9,14 @@ class Order {
   final String time;
   final ImageData image;
   final String amount;
+  final String updatedamount;
   final String status;
-  final String lat;
-  final String lon;
+  final String address;
   final DateTime timestamp;
 
   Order({
     required this.id,
+    required this.updatedamount,
     required this.userId,
     required this.seller,
     required this.type,
@@ -26,8 +27,7 @@ class Order {
     required this.image,
     required this.amount,
     required this.status,
-    required this.lat,
-    required this.lon,
+    required this.address,
     required this.timestamp,
   });
 
@@ -44,9 +44,9 @@ class Order {
       image: ImageData.fromJson(json['image']),
       amount: json['amount'],
       status: json['status'],
-      lat: json['lat'],
-      lon: json['lon'],
+      address: json['address'],
       timestamp: DateTime.parse(json['timestamp']),
+      updatedamount: json['updatedAmount'],
     );
   }
 }

@@ -11,7 +11,7 @@ class ApiServiceForSignOut {
     const String URL = "${baseUrl}customer/logout";
     final prefs = await SharedPreferences.getInstance();
     String id = prefs.getString("id").toString();
-    print(id);
+    // print(id);
     String token = prefs.getString("token").toString();
     final response = await http.put(Uri.parse(URL) ,  headers: {
       'Content-Type': 'application/json',
@@ -26,13 +26,21 @@ class ApiServiceForSignOut {
     //       "customerId": id
     //     }));
     final String res = response.body;
-    print(res);
+    // print(res);
     if (res != 'null') {
-      print(res);
+      // print(res);
       try {
         final jsonData = json.decode(res) as Map<String, dynamic>;
         prefs.remove("id");
         prefs.remove("token");
+        prefs.remove("address");
+        prefs.remove("firstname");
+        prefs.remove("lastname");
+        prefs.remove("email");
+        prefs.remove("phonenumber");
+        prefs.remove("dateofbirth");
+        prefs.remove("city");
+
         return LogOutModel.fromJson(jsonData);
       } catch (e) {
         print(e);

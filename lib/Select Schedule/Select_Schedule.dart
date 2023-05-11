@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:horizontal_center_date_picker/datepicker_controller.dart';
 import 'package:horizontal_center_date_picker/horizontal_date_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_customer_side/Upload%20Photo/Upload_Photo.dart';
-
+import 'package:intl/intl.dart';
 import '../Api/ApiServiceForStoringOrders.dart';
 
 class Select_Schedule extends StatefulWidget {
+
   String id;
   String amount;
   String type;
@@ -17,19 +19,37 @@ class Select_Schedule extends StatefulWidget {
 }
 
 class _Select_ScheduleState extends State<Select_Schedule> {
-  var now = DateTime.now();
+  DateTime now = DateTime.now();
 
   DatePickerController _datePickerController = DatePickerController();
-
-  DateTime startDate = DateTime.now();
-
-  DateTime endDate = DateTime.now();
+  DateTime start = DateTime.now();
+  DateTime twoMonthsFromNow = DateTime.now().add(Duration(days: 30));
 
   double value = 0;
   double value1 = 0;
 
+  String name = "";
+  String am_pm = "AM";
+
+  @override
+void initState() {
+  super.initState();
+  initialize();
+
+
+}
+  initialize() async {
+    final prefs = await SharedPreferences.getInstance();
+    String f =  prefs.getString("firstname").toString();
+    String l =  prefs.getString("lastname").toString();
+    setState(() {
+
+      name = f+l;
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    // print(now);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -117,12 +137,12 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "March 2023",
+                                "2023",
                                 style: TextStyle(
                                     fontSize: 10, color: Color(0xffB4B5B5)),
                               ),
                               SizedBox(width: 5),
-                              SvgPicture.asset("assets/Drop down.svg"),
+                              // SvgPicture.asset("assets/Drop down.svg"),
                             ],
                           ),
                         ),
@@ -130,20 +150,37 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  HorizontalDatePickerWidget(
-                    locale: 'en_AU',
-                    startDate: DateTime(1),
-                    endDate: DateTime(12),
-                    selectedDate: now,
-                    widgetWidth: MediaQuery.of(context).size.width,
-                    datePickerController: _datePickerController,
-                    onValueSelected: (date) {
-                      setState(() {
-                        date = now;
-                      });
-                      print('selected = ${now}');
-                    },
-                  ),
+              HorizontalDatePickerWidget(
+                locale: 'en_AU',
+                startDate: start, // set start date to 30 days ago
+                endDate: twoMonthsFromNow, // set end date to today
+                selectedDate: now,
+                widgetWidth: MediaQuery.of(context).size.width,
+                datePickerController: _datePickerController,
+                onValueSelected: (date) {
+                  setState(() {
+                    now = date ;
+                  });
+                  print('selected = $now');
+                },
+
+
+              ),
+
+              // HorizontalDatePickerWidget(
+                  //   locale: 'en_AU',
+                  //   startDate: DateTime(1),
+                  //   endDate: DateTime(999),
+                  //   selectedDate: now,
+                  //   widgetWidth: MediaQuery.of(context).size.width,
+                  //   datePickerController: _datePickerController,
+                  //   onValueSelected: (date) {
+                  //     setState(() {
+                  //       now = date ;
+                  //     });
+                  //     print('selected = $now');
+                  //   },
+                  // ),
                 ],
               ),
             ),
@@ -177,7 +214,7 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                   width: 60,
                   child: Center(
                       child: Text(
-                    "05",
+                        value.toInt().toString(),
                     style: TextStyle(fontSize: 14, color: Colors.black),
                   )),
                 ),
@@ -202,7 +239,7 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                   width: 60,
                   child: Center(
                       child: Text(
-                    "27",
+                        value1.toInt().toString(),
                     style: TextStyle(fontSize: 14, color: Colors.black),
                   )),
                 ),
@@ -247,6 +284,11 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                           ),
                         ],
                         onChanged: (value) {
+                          setState(() {
+
+                            am_pm = value!;
+                          });
+                          print(value);
                           print("changed");
                         },
                       ),
@@ -271,11 +313,13 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                 thumbColor: Color(0xffF89F5B),
                 inactiveColor: Colors.grey,
                 activeColor: Color(0xff9C3587),
+                min: 0,
+                max: 12,
                 value: value,
                 onChanged: (n) {
                   setState(() {
                     value = n;
-                    print(value);
+                    print(value.toInt());
                   });
                 }),
             Padding(
@@ -293,11 +337,14 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                 inactiveColor: Colors.grey,
                 activeColor: Color(0xff9C3587),
                 value: value1,
+                min: 0,
+                max: 60,
                 onChanged: (n) {
                   setState(() {
                     value1 = n;
                   });
                 }),
+            SizedBox(height: 30,),
             Container(
               decoration: BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(
@@ -320,7 +367,7 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                     onTap: () {
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {
-                        return Upload_Photo(id: widget.id);
+                        return Upload_Photo(id: widget.id, type: widget.type, username: name, day: DateFormat('d').format(now), time: '${value.toInt().toString()}:${value1.toInt().toString()} ${am_pm}', date:  DateFormat('yyyy-MM-dd').format(now), ammount: widget.amount,);
                       }));
                     },
                     child: Container(
@@ -352,89 +399,89 @@ class _Select_ScheduleState extends State<Select_Schedule> {
                 ],
               ),
             ),
-            SizedBox(height: 30),
-            SizedBox(
-              width: 130,
-              height: 30,
-              child: ElevatedButton(
-                  onPressed: () {
-                    // Map<String , dynamic>  body=  {
-                    //
-                    //     "userId": "6439f15ae98af0dc09c16bcf",
-                    //     "sellerId": "643944727c89ea515877c546",
-                    //     "type": "Heater",
-                    //     "date": "2023-04-15T09:00:00Z",
-                    //     "day": "Friday",
-                    //     "time": "09:00 AM",
-                    //     "image": "<base64-encoded-image-data>",
-                    //     "amount": "50.00",
-                    //      "lat" : "10",
-                    //      "lon" : "10",
-                    //      "username" : "hello"
-                    // };
-                    // ApiServiceForStoringOrder.storeorder(body).then((value) => {
-                    //   if(value == true)
-                    // {
-                    //   print("Asd"),
-                    //
-                    // }else{
-                    //     print("error")
-                    //   }
-                    // });
-
-                    // print(body.runtimeType);
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (BuildContext context) => AlertDialog(
-                    //     title: Container(
-                    //         decoration: BoxDecoration(
-                    //           color: Colors.white,
-                    //           borderRadius: BorderRadius.circular(100),
-                    //         ),
-                    //         height: 100,
-                    //         width: 40,
-                    //         child: Column(
-                    //           children: [
-                    //             Text(
-                    //               "Your Request is to Proceed you\n     may get a notification",
-                    //               style: TextStyle(
-                    //                   fontSize: 16, color: Color(0xff653780)),
-                    //             ),
-                    //             SizedBox(height: 30),
-                    //             SizedBox(
-                    //               width: 110,
-                    //               height: 25,
-                    //               child: ElevatedButton(
-                    //                   onPressed: () {
-                    //
-                    //
-                    //                   },
-                    //                   style: ElevatedButton.styleFrom(
-                    //                       primary: Color(0xff9C3587),
-                    //                       shape: RoundedRectangleBorder(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(32))),
-                    //                   child: Text(
-                    //                     "ok",
-                    //                     style: TextStyle(
-                    //                         fontSize: 11, color: Colors.white),
-                    //                   )),
-                    //             ),
-                    //           ],
-                    //         )),
-                    //   ),
-                    // );
-                  },
-                  style: ElevatedButton.styleFrom(
-                      primary: Color(0xffc997c1),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32))),
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(fontSize: 11, color: Colors.white),
-                  )),
-            ),
-            SizedBox(height: 50,),
+            // SizedBox(height: 30),
+            // SizedBox(
+            //   width: 130,
+            //   height: 30,
+            //   child: ElevatedButton(
+            //       onPressed: () {
+            //         // Map<String , dynamic>  body=  {
+            //         //
+            //         //     "userId": "6439f15ae98af0dc09c16bcf",
+            //         //     "sellerId": "643944727c89ea515877c546",
+            //         //     "type": "Heater",
+            //         //     "date": "2023-04-15T09:00:00Z",
+            //         //     "day": "Friday",
+            //         //     "time": "09:00 AM",
+            //         //     "image": "<base64-encoded-image-data>",
+            //         //     "amount": "50.00",
+            //         //      "lat" : "10",
+            //         //      "lon" : "10",
+            //         //      "username" : "hello"
+            //         // };
+            //         // ApiServiceForStoringOrder.storeorder(body).then((value) => {
+            //         //   if(value == true)
+            //         // {
+            //         //   print("Asd"),
+            //         //
+            //         // }else{
+            //         //     print("error")
+            //         //   }
+            //         // });
+            //
+            //         // print(body.runtimeType);
+            //         // showDialog(
+            //         //   context: context,
+            //         //   builder: (BuildContext context) => AlertDialog(
+            //         //     title: Container(
+            //         //         decoration: BoxDecoration(
+            //         //           color: Colors.white,
+            //         //           borderRadius: BorderRadius.circular(100),
+            //         //         ),
+            //         //         height: 100,
+            //         //         width: 40,
+            //         //         child: Column(
+            //         //           children: [
+            //         //             Text(
+            //         //               "Your Request is to Proceed you\n     may get a notification",
+            //         //               style: TextStyle(
+            //         //                   fontSize: 16, color: Color(0xff653780)),
+            //         //             ),
+            //         //             SizedBox(height: 30),
+            //         //             SizedBox(
+            //         //               width: 110,
+            //         //               height: 25,
+            //         //               child: ElevatedButton(
+            //         //                   onPressed: () {
+            //         //
+            //         //
+            //         //                   },
+            //         //                   style: ElevatedButton.styleFrom(
+            //         //                       primary: Color(0xff9C3587),
+            //         //                       shape: RoundedRectangleBorder(
+            //         //                           borderRadius:
+            //         //                               BorderRadius.circular(32))),
+            //         //                   child: Text(
+            //         //                     "ok",
+            //         //                     style: TextStyle(
+            //         //                         fontSize: 11, color: Colors.white),
+            //         //                   )),
+            //         //             ),
+            //         //           ],
+            //         //         )),
+            //         //   ),
+            //         // );
+            //       },
+            //       style: ElevatedButton.styleFrom(
+            //           primary: Color(0xffc997c1),
+            //           shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(32))),
+            //       child: Text(
+            //         "Continue",
+            //         style: TextStyle(fontSize: 11, color: Colors.white),
+            //       )),
+            // ),
+            // SizedBox(height: 50,),
           ],
         ),
       ),
