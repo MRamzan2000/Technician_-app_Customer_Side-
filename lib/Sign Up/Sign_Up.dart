@@ -103,6 +103,15 @@ class _Sign_UpState extends State<Sign_Up> {
 
   }
   Future<void> _checkLocationPermission() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Getting Your Location Please Wait!'),
+      ),
+    );
+    setState(() {
+      _loading = true;
+    });
+
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -110,38 +119,98 @@ class _Sign_UpState extends State<Sign_Up> {
         return;
       }
     }
+
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-        _locationData = await location.getLocation();
-        setState(() {
-          longitude = _locationData.longitude!;
-          latitude = _locationData.latitude!;
-          print("Longitide:${latitude}");
-          print("Longitide:${longitude}");
-        });
+        return;
       }
     }
-    else{
-      _locationData = await location.getLocation();
-      longitude = _locationData.longitude!;
-      latitude = _locationData.latitude!;
-      final coordinates = new Coordinates(
-          latitude, longitude);
-      var addresses = await Geocoder.local.findAddressesFromCoordinates(
-          coordinates);
-      var first = addresses.first;
-      setState(()async{
-        print("Longitide:${latitude}");
-        print("Longitide:${longitude}");
-        _address="${first.addressLine}";
 
-      });
+    bool locationObtained = false;
+    while (!locationObtained) {
+      try {
+        _locationData = await location.getLocation();
+        longitude = _locationData.longitude!;
+        latitude = _locationData.latitude!;
+        final coordinates = Coordinates(latitude, longitude);
+        var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        var first = addresses.first;
+        final prefs = await SharedPreferences.getInstance();
+        setState(() {
+
+
+          _address = "${first.addressLine}";
+          prefs.setString('address', "${first.addressLine}");
+          print(_address);
+        });
+        upload();
+
+        locationObtained = true;
+      } catch (e) {
+        // Location not obtained, retrying...
+        print(e);
+        await Future.delayed(Duration(seconds: 1));
+      }
     }
+
+    setState(() {
+      _loading = false;
+    });
   }
 
+  // Future<void> _checkLocationPermission() async {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar( content: Text('Getting Your Location Please Wait!'), ));
+  //   setState(() {
+  //     _loading = true;
+  //   });
+  //   _serviceEnabled = await location.serviceEnabled();
+  //   if (!_serviceEnabled) {
+  //     _serviceEnabled = await location.requestService();
+  //     if (!_serviceEnabled) {
+  //       return;
+  //     }
+  //   }
+  //   _permissionGranted = await location.hasPermission();
+  //   if (_permissionGranted == PermissionStatus.denied) {
+  //     _permissionGranted = await location.requestPermission();
+  //     if (_permissionGranted != PermissionStatus.granted) {
+  //       _locationData = await location.getLocation();
+  //       setState(() {
+  //         longitude = _locationData.longitude!;
+  //         latitude = _locationData.latitude!;
+  //         print("Longitide:${latitude}");
+  //         print("Longitide:${longitude}");
+  //       });
+  //     }
+  //   }
+  //   else{
+  //     _locationData = await location.getLocation();
+  //     longitude = _locationData.longitude!;
+  //     latitude = _locationData.latitude!;
+  //     final coordinates = new Coordinates(
+  //         latitude, longitude);
+  //     var addresses = await Geocoder.local.findAddressesFromCoordinates(
+  //         coordinates);
+  //     var first = addresses.first;
+  //     setState(()async{
+  //       print("Longitide:${latitude}");
+  //       print("Longitide:${longitude}");
+  //       _address="${first.addressLine}";
+  //
+  //     });
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //   }
+  // }
+
   upload(){
+    setState(() {
+      _loading = true;
+    });
     Map<String, dynamic> body = {
       "firstname": firstname.text,
       "lastname": lastname.text,
@@ -393,25 +462,7 @@ class _Sign_UpState extends State<Sign_Up> {
 
                               n=0;
                             }
-                            else{
-                              if(n==1){
-                                if(myid == ""){
-                                  upload();
 
-
-                                }
-
-                              }
-                              else{
-                                n=1;
-                              }
-                            }
-                            final prefs = await SharedPreferences.getInstance();
-                            var add = prefs.setString('address', _address);
-                            print(add);
-                            setState(() {
-
-                            });
                           }
 
 

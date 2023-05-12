@@ -7,14 +7,14 @@ import 'package:technician_customer_side/Starting%20Pages/First_page.dart';
 import 'Bottom bar/Bottom_Bar.dart';
 
 void main() {
-  runApp(const MaterialApp(
+  runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -41,9 +41,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(body:
-    // Messages()
-    //MapSample()
-    myid == ""  ?  First_Page()  : Bottom_Bar()
+    MapSample()
+
+
+    // myid == ""  ?  First_Page()  : Bottom_Bar()
     );
   }
 }

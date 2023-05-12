@@ -286,7 +286,8 @@ void initState() {
                         onChanged: (value) {
                           setState(() {
 
-                            am_pm = value!;
+                            am_pm = value!.toString();
+
                           });
                           print(value);
                           print("changed");
