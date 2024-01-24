@@ -90,8 +90,8 @@ class _My_OrdersState extends State<My_Orders> {
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Center(
                     child: Text(
-                      "My Orders",
-                      style: TextStyle(fontSize: 17, color: Colors.black),
+                      "طلباتي",
+                      style: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                   ),
                 ),
@@ -390,7 +390,7 @@ class _My_OrdersState extends State<My_Orders> {
                                                                       .circular(
                                                                           32)))),
                                                   child: const Text(
-                                                    "Cancel",
+                                                    " إلغاء",
                                                     style: TextStyle(
                                                         fontSize: 12,
                                                         color: Color(0xffE53F71)),

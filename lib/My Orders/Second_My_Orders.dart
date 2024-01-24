@@ -10,11 +10,11 @@ class Second_My_Orders extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           Align(
             alignment: Alignment.topLeft,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: Color(0xfff8cdaa),
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(32),
@@ -49,7 +49,7 @@ class Second_My_Orders extends StatelessWidget {
                           )),
                     ),
                     Text(
-                      "My Orders",
+                      "طلباتي",
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ],

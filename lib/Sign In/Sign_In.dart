@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -6,6 +7,7 @@ import 'package:technician_customer_side/Api/SignInApi.dart';
 import 'package:technician_customer_side/Bottom%20bar/Bottom_Bar.dart';
 import 'package:technician_customer_side/Sign%20Up/Sign_Up.dart';
 import '../forgotpass_verify_pass/Forget_Password.dart';
+import '../notification_Services.dart';
 
 class Sign_In extends StatefulWidget {
   const Sign_In({Key? key}) : super(key: key);
@@ -15,10 +17,35 @@ class Sign_In extends StatefulWidget {
 }
 
 class _Sign_InState extends State<Sign_In> {
-
-  TextEditingController email = TextEditingController();
+String? deviceToken;
+  TextEditingController phone = TextEditingController();
   TextEditingController pass = TextEditingController();
   bool _loading = false;
+  NotificationServices notificationServices = NotificationServices();
+  @override
+  void initState() {
+    super.initState();
+
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    notificationServices.inItLocalNotification(context);
+
+    notificationServices.handleAction();
+    notificationServices.getDeviceToken().then((value) {
+      if(kDebugMode){
+        deviceToken=value;
+      }
+
+
+    });
+  }
+  String? validateRequired(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please fill all required fields';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -29,38 +56,40 @@ class _Sign_InState extends State<Sign_In> {
           child: Center(
             child: Column(
               children: [
-                SizedBox(height: 50),
-                SvgPicture.asset(
-                  "assets/Sign in.svg",
+                const SizedBox(height: 50),
+                Image.asset("assets/logo.png",
                   height: MediaQuery.of(context).size.height / 3,
                 ),
-                SizedBox(height: 30),
-                Text(
-                  "Sign In",
+                const SizedBox(height: 30),
+                const Text(
+                  " تسجيل الدخول",
                   style: TextStyle(fontSize: 17, color: Colors.black),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
-                    controller: email,
-                    decoration: InputDecoration(
+                    validator: validateRequired,
+
+                    keyboardType: TextInputType.number,
+                    controller: phone,
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(top: 20),
-                        hintText: "Email ID",
-                        hintStyle: TextStyle(fontSize: 10, color: Colors.black)),
+                        hintText: " رقم الجوال",
+                        hintStyle: TextStyle(fontSize: 11, color: Colors.black)),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: TextFormField(
                     controller: pass,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(top: 20),
-                        hintText: "Password",
+                        hintText: "كلمة المرور",
                         hintStyle: TextStyle(fontSize: 10, color: Colors.black)),
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Padding(
                   padding: const EdgeInsets.only(right: 40),
                   child: Align(
@@ -72,12 +101,12 @@ class _Sign_InState extends State<Sign_In> {
                           }));
                         },
                         child: const Text(
-                          "Forgot Password",
+                          "نسيت كلمة المرور",
                           style: TextStyle(fontSize: 12, color: Colors.black),
                         ),
                       )),
                 ),
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
                 SizedBox(
                   width: 130,
                   height: 30,
@@ -89,7 +118,7 @@ class _Sign_InState extends State<Sign_In> {
                         });
                         Map<String, dynamic> body = {
 
-                          "email": email.text,
+                          "phonenumber": phone.text,
                           "password": pass.text,
 
                         };
@@ -97,11 +126,13 @@ class _Sign_InState extends State<Sign_In> {
                           if (value.userId != "")
 
                             {
-                              print(value.userId),
+                              print('This is User Id : ${value.userId}'),
+                              notificationServices.saveUserId(value.userId.toString()),
 
+                        notificationServices.addDeviceToken(value.userId.toString(),deviceToken.toString()),
                         Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Bottom_Bar()),
+                        MaterialPageRoute(builder: (context) => const Bottom_Bar()),
                         ),
                         setState(() {
                         _loading = false;
@@ -116,17 +147,17 @@ class _Sign_InState extends State<Sign_In> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return CupertinoAlertDialog(
-                                    title: Text('Error'),
+                                    title: const Text('Error'),
                                     content: Text(value.message.toString()),
                                     actions: [
                                       CupertinoDialogAction(
-                                        child: Text('Cancel'),
+                                        child: const Text(' إلغاء'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
                                       ),
                                       CupertinoDialogAction(
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                         onPressed: () {
                                           // Perform some action
                                           Navigator.of(context).pop();
@@ -140,47 +171,47 @@ class _Sign_InState extends State<Sign_In> {
                        });
                       },
                       style: ElevatedButton.styleFrom(
-                          primary: Color(0xff9C3587),
+                          backgroundColor: const Color(0xff9C3587),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32))),
-                      child: Text(
-                        "Sign In",
+                      child: const Text(
+                        " تسجيل الدخول",
                         style: TextStyle(fontSize: 11, color: Colors.white),
                       )),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Don't have an Account?",
+                    const Text(
+                      "ليس لديك حساب؟",
                       style: TextStyle(fontSize: 10, color: Colors.black),
                     ),
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(
                             MaterialPageRoute(builder: (BuildContext context) {
-                          return Sign_Up();
+                          return const Sign_Up();
                         }));
                       },
-                      child: Text(
-                        " Sign Up",
+                      child: const Text(
+                        "التسجيل",
                         style: TextStyle(fontSize: 12, color: Color(0xff585D5E)),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 50),
-                Text(
-                  "Sign In with",
+                const SizedBox(height: 50),
+                const Text(
+                  "تسجيل الدخول ب",
                   style: TextStyle(fontSize: 10, color: Colors.black),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset("assets/Sign in apple.svg"),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     SvgPicture.asset("assets/Sign in mail.svg")
                   ],
                 )

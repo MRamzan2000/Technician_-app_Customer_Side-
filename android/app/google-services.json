@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "421647235826",
+    "project_id": "technician-app-ec0ce",
+    "storage_bucket": "technician-app-ec0ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421647235826:android:10a0c872d8891b0cab6e6b",
+        "android_client_info": {
+          "package_name": "com.example.technician_customer_side"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABXyexq-cc9rIYqBU9yxV1uo_av9d5hoY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

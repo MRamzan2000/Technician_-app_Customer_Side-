@@ -6,16 +6,16 @@ import '../Api/ApiServieForgotingpass.dart';
 import '../Sign In/Sign_In.dart';
 
 class Password extends StatefulWidget {
-  final String email;
+  final String number;
 
-  const Password({Key? key, required this.email}) : super(key: key);
+  const Password({Key? key, required this.number}) : super(key: key);
 
   @override
   State<Password> createState() => _PasswordState();
 }
 
 class _PasswordState extends State<Password> {
-  TextEditingController pass =TextEditingController();
+  TextEditingController code =TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _PasswordState extends State<Password> {
           ),
         ),
         title: Text(
-          "Password",
+          "Enter Your Code",
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
         centerTitle: true,
@@ -44,89 +44,45 @@ class _PasswordState extends State<Password> {
           child: Column(
             children: [
               SizedBox(height: 50),
-              SvgPicture.asset("assets/Developer.svg"),
+              SvgPicture.asset("assets/Developer.svg",
+              height: MediaQuery.of(context).size.height / 3,),
               SizedBox(height: 30),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextFormField(
-                  controller: pass,
+                  controller: code,
 
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
+
                     contentPadding: EdgeInsets.only(top: 17),
                     prefixIcon: SvgPicture.asset(
                       "assets/Lock.svg",
                       fit: BoxFit.scaleDown,
                     ),
-                    hintText: "Your new Password",
+                    hintText: "Your Code",
                     hintStyle: TextStyle(fontSize: 12, color: Color(0xffCCCACA)),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(top: 17),
-                    prefixIcon: SvgPicture.asset(
-                      "assets/Lock.svg",
-                      fit: BoxFit.scaleDown,
-                    ),
-                    hintText: "Confirm Password",
-                    hintStyle: TextStyle(fontSize: 12, color: Color(0xffCCCACA)),
-                  ),
-                ),
-              ),
+
               SizedBox(height: 50),
               SizedBox(
                 height: 35,
                 width: 150,
                 child: ElevatedButton(
                     onPressed: () {
-                      Map<String , dynamic> body ={
-                        "email":widget.email,
-                        "newPassword": pass.text
-                      };
+                      if(code.text == widget. number){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                          return Sign_In();
+                        }));
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Invalid Code!'),
+                        ));
+                      }
 
 
-
-                      ApiServiceForForgotPassword.changePassword(body).then((value) => {
-                        if(value.message == "Password updated"){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                            return Sign_In();
-                          }))
-                        }
-                        else{
-                          showCupertinoDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CupertinoAlertDialog(
-                                title: const Text('Error'),
-                                content: value.error == null
-                                    ? Text(value.message.toString())
-                                    : Text(value.error.toString()),
-                                actions: [
-                                  CupertinoDialogAction(
-                                    child: Text('Cancel'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  CupertinoDialogAction(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      // Perform some action
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          )
-
-
-                        }
-                      });
 
                     },
                     style: ElevatedButton.styleFrom(
@@ -134,7 +90,7 @@ class _PasswordState extends State<Password> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(32))),
                     child: Text(
-                      "Done",
+                      "تم",
                       style: TextStyle(fontSize: 12, color: Colors.white),
                     )),
               ),

@@ -1,15 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_customer_side/Cooling%20Services/Cooling_Services.dart';
-import 'package:technician_customer_side/Select%20Schedule/Select_Schedule.dart';
 import 'package:technician_customer_side/Sign%20In/Sign_In.dart';
+import 'package:http/http.dart' as http;
 
 import '../Api/SignOutApi.dart';
 import '../Map/map.dart';
 import '../Transactions/Transactions.dart';
+import '../notification_Services.dart';
 
 class Home_Screen extends StatefulWidget {
   Home_Screen({Key? key}) : super(key: key);
@@ -19,13 +24,17 @@ class Home_Screen extends StatefulWidget {
 }
 
 class _Home_ScreenState extends State<Home_Screen> {
-  String? name;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     initialize();
   }
+
+  String? name;
+
+
 
   initialize() async {
     final prefs = await SharedPreferences.getInstance();
@@ -36,18 +45,40 @@ class _Home_ScreenState extends State<Home_Screen> {
 
   bool _loading = false;
 
+
+
+
+
+
+  File? _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: _loading,
       child: Scaffold(
         drawer: Drawer(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(topRight: Radius.circular(100))),
           child: Column(
             children: [
+
+
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Color(0xff653780),
                     borderRadius:
                         BorderRadius.only(topRight: Radius.circular(100)),
@@ -61,6 +92,9 @@ class _Home_ScreenState extends State<Home_Screen> {
                 width: MediaQuery.of(context).size.width,
                 child: Stack(
                   children: [
+
+
+
                     Padding(
                       padding: const EdgeInsets.only(right: 70, bottom: 10),
                       child: SvgPicture.asset("assets/6396 [Converted].svg"),
@@ -82,7 +116,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Container(
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(32),
@@ -98,7 +132,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                           child: Text(
                                             "HI! ${name}",
                                             // textAlign: TextAlign.right,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.black,
                                             ),
@@ -107,14 +141,14 @@ class _Home_ScreenState extends State<Home_Screen> {
                                       )),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 20, top: 6),
+                                  padding: const EdgeInsets.only(left: 20, top: 6),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        image: DecorationImage(
+                                        image: const DecorationImage(
                                             fit: BoxFit.cover,
                                             image: AssetImage(
                                                 "assets/pic.png.jpg")),
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                             Radius.circular(100)),
                                         border: Border.all(
                                             color: Colors.white, width: 0.5)),
@@ -145,21 +179,21 @@ class _Home_ScreenState extends State<Home_Screen> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.only(left: 25),
                 child: Row(
                   children: [
                     SvgPicture.asset("assets/transcatiion.svg"),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).push(
                             MaterialPageRoute(builder: (BuildContext context) {
-                          return Transactions();
+                          return const Transactions();
                         }));
                       },
-                      child: Text(
+                      child: const Text(
                         "Transaction",
                         style:
                             TextStyle(fontSize: 14, color: Color(0xff233245)),
@@ -211,7 +245,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                 child: Row(
                   children: [
                     SvgPicture.asset("assets/logout.svg"),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     TextButton(
                       onPressed: () {
                         showDialog(
@@ -239,18 +273,18 @@ class _Home_ScreenState extends State<Home_Screen> {
                                           Navigator.of(context).pop();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                            primary: Color(0xff9C3587),
+                                            backgroundColor: const Color(0xff9C3587),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(32))),
-                                        child: Text(
-                                          "Cancel",
+                                        child: const Text(
+                                          " إلغاء",
                                           style: TextStyle(
                                               fontSize: 11,
                                               color: Colors.white),
                                         )),
                                   ),
-                                  SizedBox(width: 20),
+                                  const SizedBox(width: 20),
                                   SizedBox(
                                     width: 100,
                                     height: 32,
@@ -271,7 +305,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                                 builder:
                                                                     (BuildContext
                                                                         context) {
-                                                          return Sign_In();
+                                                          return const Sign_In();
                                                         })),
                                                         setState(() {
                                                           _loading = false;
@@ -288,7 +322,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                               context) {
                                                             return CupertinoAlertDialog(
                                                               title:
-                                                                  Text('Error'),
+                                                                  const Text('Error'),
                                                               content: value
                                                                           .error ==
                                                                       null
@@ -300,8 +334,8 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                                       .toString()),
                                                               actions: [
                                                                 CupertinoDialogAction(
-                                                                  child: Text(
-                                                                      'Cancel'),
+                                                                  child: const Text(
+                                                                      ' إلغاء'),
                                                                   onPressed:
                                                                       () {
                                                                     Navigator.of(
@@ -310,7 +344,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                                   },
                                                                 ),
                                                                 CupertinoDialogAction(
-                                                                  child: Text(
+                                                                  child: const Text(
                                                                       'OK'),
                                                                   onPressed:
                                                                       () {
@@ -328,12 +362,12 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                   });
                                         },
                                         style: ElevatedButton.styleFrom(
-                                            primary: Color(0xffFFFFFF),
+                                            primary: const Color(0xffFFFFFF),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(32))),
-                                        child: Text(
-                                          "Sign out",
+                                        child: const Text(
+                                          " تسجيل الخروج",
                                           style: TextStyle(
                                               fontSize: 11,
                                               color: Color(0xff9C3587)),
@@ -343,7 +377,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                               )),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Log Out",
                         style:
                             TextStyle(fontSize: 14, color: Color(0xff233245)),
@@ -363,7 +397,7 @@ class _Home_ScreenState extends State<Home_Screen> {
             ],
           ),
         ),
-        backgroundColor: Color(0xff653780),
+        backgroundColor: const Color(0xff653780),
         body: Column(
           children: [
             const SizedBox(height: 60),
@@ -374,60 +408,56 @@ class _Home_ScreenState extends State<Home_Screen> {
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text(
-                        "Welcome",
+                        "مرحبا",
                         style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                      Text(
-                        "We're Glad you are here",
-                        style: TextStyle(fontSize: 15, color: Colors.white),
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        height: 25,
-                        width: 25,
-                        child: SvgPicture.asset(
-                          "assets/HS Ntofication.svg",
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        height: 25,
-                        width: 25,
-                        child: Builder(builder: (context) {
-                          return InkWell(
-                            onTap: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            child: SvgPicture.asset(
-                              "assets/HS Drawer.svg",
-                              fit: BoxFit.scaleDown,
-                            ),
-                          );
-                        }),
-                      ),
-                    ],
-                  )
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         borderRadius: BorderRadius.circular(100),
+                  //       ),
+                  //       height: 25,
+                  //       width: 25,
+                  //       child: SvgPicture.asset(
+                  //         "assets/HS Ntofication.svg",
+                  //         fit: BoxFit.scaleDown,
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 10),
+                  //     Container(
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         borderRadius: BorderRadius.circular(100),
+                  //       ),
+                  //       height: 25,
+                  //       width: 25,
+                  //       child: Builder(builder: (context) {
+                  //         return InkWell(
+                  //           onTap: () {
+                  //             Scaffold.of(context).openDrawer();
+                  //           },
+                  //           child: SvgPicture.asset(
+                  //             "assets/HS Drawer.svg",
+                  //             fit: BoxFit.scaleDown,
+                  //           ),
+                  //         );
+                  //       }),
+                  //     ),
+                  //   ],
+                  // )
                 ],
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(50),
@@ -437,40 +467,40 @@ class _Home_ScreenState extends State<Home_Screen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      SizedBox(height: 30),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(32),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 3,
-                                offset: Offset(1.0, 2.0),
-                              )
-                            ]),
-                        height: 40,
-                        width: MediaQuery.of(context).size.width / 1.1,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            prefixIcon: SvgPicture.asset(
-                              "assets/HS search box.svg",
-                              fit: BoxFit.scaleDown,
-                            ),
-                            hintText: "Search any type of services",
-                            hintStyle: TextStyle(
-                                fontSize: 10, color: Color(0xffBAC0C0)),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 5),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //       color: Colors.white,
+                      //       borderRadius: BorderRadius.circular(32),
+                      //       boxShadow: [
+                      //         BoxShadow(
+                      //           color: Colors.grey,
+                      //           blurRadius: 3,
+                      //           offset: Offset(1.0, 2.0),
+                      //         )
+                      //       ]),
+                      //   height: 40,
+                      //   width: MediaQuery.of(context).size.width / 1.1,
+                      //   child: TextFormField(
+                      //     decoration: InputDecoration(
+                      //       prefixIcon: SvgPicture.asset(
+                      //         "assets/HS search box.svg",
+                      //         fit: BoxFit.scaleDown,
+                      //       ),
+                      //       hintText: "Search any type of services",
+                      //       hintStyle: TextStyle(
+                      //           fontSize: 10, color: Color(0xffBAC0C0)),
+                      //       border: InputBorder.none,
+                      //       contentPadding: EdgeInsets.only(top: 5),
+                      //     ),
+                      //   ),
+                      // ),
+                      const SizedBox(height: 30),
                       Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(45),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Colors.grey,
                                 blurRadius: 3,
@@ -486,76 +516,50 @@ class _Home_ScreenState extends State<Home_Screen> {
                             children: [
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
+                                children: const [
                                   Text(
-                                    "Cleaning Servive",
+                                    "Funni",
                                     style: TextStyle(
-                                        fontSize: 14, color: Colors.black),
+                                        fontSize: 18, color: Colors.black),
                                   ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    "Lorem ipsum dolor sit amet, consectetu elit, sed\ndo eiusmod tempor Lorem ipsum dolor sit amet,\nconsectetu elit, sed do eiusmod tempor Lorem\nipsum dolor sit amet, consectetu elit, sed do",
-                                    style: TextStyle(
-                                        fontSize: 6, color: Colors.black),
-                                  ),
-                                  SizedBox(height: 5),
-                                  SizedBox(
-                                    width: 100,
-                                    height: 20,
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          // Navigator.of(context).push(
-                                          //     MaterialPageRoute(builder:
-                                          //         (BuildContext context) {
-                                          //   return Select_Schedule();
-                                          // }));
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Color(0xffF89F5B),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(32))),
-                                        child: Text(
-                                          "Book Now",
-                                          style: TextStyle(
-                                              fontSize: 7, color: Colors.white),
-                                        )),
-                                  )
+                                  // SizedBox(height: 5),
+                                  // Text(
+                                  //   "Lorem ipsum dolor sit amet, consectetu elit, sed\ndo eiusmod tempor Lorem ipsum dolor sit amet,\nconsectetu elit, sed do eiusmod tempor Lorem\nipsum dolor sit amet, consectetu elit, sed do",
+                                  //   style: TextStyle(
+                                  //       fontSize: 6, color: Colors.black),
+                                  // ),
                                 ],
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                    color: Color(0xffffd19c),
+                                    color: const Color(0xffffd19c),
                                     borderRadius: BorderRadius.circular(45)),
                                 height: 140,
                                 width: MediaQuery.of(context).size.width / 2.1,
-                                child: SvgPicture.asset(
-                                  "assets/HS clean.svg",
-                                  fit: BoxFit.scaleDown,
-                                ),
+                                child: Image.asset("assets/logo.png")
                               )
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
+                      const SizedBox(height: 15),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 20),
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Book a Service For",
+                            " خدمات ",
                             style: TextStyle(fontSize: 18, color: Colors.black),
                           ),
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(width: 15),
+                            const SizedBox(width: 15),
                             //Electric Services
                             InkWell(
                               onTap: () async{
@@ -567,14 +571,14 @@ class _Home_ScreenState extends State<Home_Screen> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) {
                                   return Cooling_Services(
-                                    type: 'Electric',
+                                    type: 'Electric+Heater',
                                   );
                                 }));
                               },
                               child: Column(
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(20),
@@ -593,9 +597,9 @@ class _Home_ScreenState extends State<Home_Screen> {
                                       fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             bottomLeft: Radius.circular(20),
@@ -609,11 +613,11 @@ class _Home_ScreenState extends State<Home_Screen> {
                                         ]),
                                     height: 40,
                                     width: MediaQuery.of(context).size.width  / 2.5,
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
-                                        "Electric Services",
+                                        "خدمات الكهرباء",
                                         style: TextStyle(
-                                            fontSize: 15, color: Colors.black),
+                                            fontSize: 13, color: Colors.black),
                                       ),
                                     ),
                                   )
@@ -629,7 +633,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                     context: context,
                                     builder: (BuildContext context) =>
                                         AlertDialog(
-                                            title: Text(
+                                            title: const Text(
                                               "Please Update your location"
                                             ),
                                             content: Row(
@@ -645,13 +649,13 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                       },
                                                       style: ElevatedButton.styleFrom(
                                                           primary:
-                                                          Color(0xffFFFFFF),
+                                                          const Color(0xffFFFFFF),
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
                                                               BorderRadius
                                                                   .circular(
                                                                   32))),
-                                                      child: Text(
+                                                      child: const Text(
                                                         "Okay",
                                                         style: TextStyle(
                                                             fontSize: 11,
@@ -676,7 +680,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                               child: Column(
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(20),
@@ -695,7 +699,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                       fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   InkWell(
                                     onTap: () async{
                                       final prefs = await SharedPreferences.getInstance();
@@ -705,7 +709,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                           context: context,
                                           builder: (BuildContext context) =>
                                               AlertDialog(
-                                                  title: Text(
+                                                  title: const Text(
                                                       "Please Update your location"
                                                   ),
                                                   content: Row(
@@ -721,13 +725,13 @@ class _Home_ScreenState extends State<Home_Screen> {
                                                             },
                                                             style: ElevatedButton.styleFrom(
                                                                 primary:
-                                                                Color(0xffFFFFFF),
+                                                                const Color(0xffFFFFFF),
                                                                 shape: RoundedRectangleBorder(
                                                                     borderRadius:
                                                                     BorderRadius
                                                                         .circular(
                                                                         32))),
-                                                            child: Text(
+                                                            child: const Text(
                                                               "Okay",
                                                               style: TextStyle(
                                                                   fontSize: 11,
@@ -749,7 +753,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                       }
                                     },
                                     child: Container(
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(20),
@@ -763,11 +767,11 @@ class _Home_ScreenState extends State<Home_Screen> {
                                           ]),
                                       height: 40,
                                       width: MediaQuery.of(context).size.width  / 2.5,
-                                      child: Center(
+                                      child: const Center(
                                         child: Text(
-                                          "Cooling Services",
+                                          "خدمات التبريد",
                                           style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 13,
                                               color: Colors.black),
                                         ),
                                       ),
@@ -776,174 +780,141 @@ class _Home_ScreenState extends State<Home_Screen> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 15),
+                            const SizedBox(width: 15),
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(width: 15),
-                            InkWell(
-                              onTap: () async{
-                                final prefs = await SharedPreferences.getInstance();
-                                String address = prefs.getString("address").toString();
-                                if(address==null){
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                            title: Text(
-                                                "Please Update your location"
-                                            ),
-                                            content: Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  width: 100,
-                                                  height: 32,
-                                                  child: ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                          primary:
-                                                          Color(0xffFFFFFF),
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  32))),
-                                                      child: Text(
-                                                        "Okay",
-                                                        style: TextStyle(
-                                                            fontSize: 11,
-                                                            color: Color(
-                                                                0xff9C3587)),
-                                                      )),
-                                                ),
-                                              ],
-                                            )),
-                                  );
-                                }
-                                else {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return Cooling_Services(
-                                          type: 'Plumber',
-                                        );
-                                      }));
-                                }
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey,
-                                            blurRadius: 3,
-                                            offset: Offset(1.0, 2.0),
-                                          )
-                                        ]),
-                                    height: 120,
-                              width: MediaQuery.of(context).size.width  / 2.5,
-                                    child: SvgPicture.asset(
-                                      "assets/Plumber service.svg",
-                                      fit: BoxFit.scaleDown,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey,
-                                            blurRadius: 3,
-                                            offset: Offset(1.0, 2.0),
-                                          )
-                                        ]),
-                                    height: 40,
-                                    width: MediaQuery.of(context).size.width  / 2.5,
-                                    child: Center(
-                                      child: Text(
-                                        "Plumber Services",
-                                        style: TextStyle(
-                                            fontSize: 15, color: Colors.black),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
+                            const SizedBox(width: 25),
+                            // InkWell(
+                            //   onTap: () async{
+                            //     final prefs = await SharedPreferences.getInstance();
+                            //     String address = prefs.getString("address").toString();
+                            //     if(address==null){
+                            //       showDialog(
+                            //         context: context,
+                            //         builder: (BuildContext context) =>
+                            //             AlertDialog(
+                            //                 title: const Text(
+                            //                     "Please Update your location"
+                            //                 ),
+                            //                 content: Row(
+                            //                   crossAxisAlignment:
+                            //                   CrossAxisAlignment.center,
+                            //                   children: [
+                            //                     SizedBox(
+                            //                       width: 100,
+                            //                       height: 32,
+                            //                       child: ElevatedButton(
+                            //                           onPressed: () {
+                            //                             Navigator.pop(context);
+                            //                           },
+                            //                           style: ElevatedButton.styleFrom(
+                            //                               primary:
+                            //                               const Color(0xffFFFFFF),
+                            //                               shape: RoundedRectangleBorder(
+                            //                                   borderRadius:
+                            //                                   BorderRadius
+                            //                                       .circular(
+                            //                                       32))),
+                            //                           child: const Text(
+                            //                             "Okay",
+                            //                             style: TextStyle(
+                            //                                 fontSize: 11,
+                            //                                 color: Color(
+                            //                                     0xff9C3587)),
+                            //                           )),
+                            //                     ),
+                            //                   ],
+                            //                 )),
+                            //       );
+                            //     }
+                            //     else {
+                            //       Navigator.of(context).push(MaterialPageRoute(
+                            //           builder: (BuildContext context) {
+                            //             return Cooling_Services(
+                            //               type: 'Plumber',
+                            //             );
+                            //           }));
+                            //     }
+                            //   },
+                            //   child: Column(
+                            //     children: [
+                            //       Container(
+                            //         decoration: const BoxDecoration(
+                            //             color: Colors.white,
+                            //             borderRadius: BorderRadius.only(
+                            //                 topLeft: Radius.circular(20),
+                            //                 topRight: Radius.circular(20)),
+                            //             boxShadow: [
+                            //               BoxShadow(
+                            //                 color: Colors.grey,
+                            //                 blurRadius: 3,
+                            //                 offset: Offset(1.0, 2.0),
+                            //               )
+                            //             ]),
+                            //         height: 120,
+                            //   width: MediaQuery.of(context).size.width  / 2.5,
+                            //         child: SvgPicture.asset(
+                            //           "assets/Plumber service.svg",
+                            //           fit: BoxFit.scaleDown,
+                            //         ),
+                            //       ),
+                            //       const SizedBox(height: 8),
+                            //       Container(
+                            //         decoration: const BoxDecoration(
+                            //             color: Colors.white,
+                            //             borderRadius: BorderRadius.only(
+                            //                 bottomLeft: Radius.circular(20),
+                            //                 bottomRight: Radius.circular(20)),
+                            //             boxShadow: [
+                            //               BoxShadow(
+                            //                 color: Colors.grey,
+                            //                 blurRadius: 3,
+                            //                 offset: Offset(1.0, 2.0),
+                            //               )
+                            //             ]),
+                            //         height: 40,
+                            //         width: MediaQuery.of(context).size.width  / 2.5,
+                            //         child: const Center(
+                            //           child: Text(
+                            //             "Plumbing Services",
+                            //             style: TextStyle(
+                            //                 fontSize: 13, color: Colors.black),
+                            //           ),
+                            //         ),
+                            //       )
+                            //     ],
+                            //   ),
+                            // ),
+                            // const SizedBox(width: 10,),
                             InkWell(
                               onTap: ()async{
-                                final prefs = await SharedPreferences.getInstance();
-                                String address = prefs.getString("address").toString();
-                                if(address==null){
                                   showDialog(
                                     context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
-                                            title: Text(
-                                                "Please Update your location"
-                                            ),
-                                            content: Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  width: 100,
-                                                  height: 32,
-                                                  child: ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                          primary:
-                                                          Color(0xffFFFFFF),
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  32))),
-                                                      child: Text(
-                                                        "Okay",
-                                                        style: TextStyle(
-                                                            fontSize: 11,
-                                                            color: Color(
-                                                                0xff9C3587)),
-                                                      )),
-                                                ),
-                                              ],
-                                            )),
+                                    builder: (context) {
+                                      return const AlertDialog(
+                                        title: Text(" أرسل الشكوى إلى : ghasanwar@gmail.com"),
+                                        content: Text(" رقم الجوال : 054 753 3936"),
+                                        actions: <Widget>[
+
+                                        ],
+                                      );
+                                    },
                                   );
-                                }
-                                else {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return Cooling_Services(
-                                          type: 'Heater',
-                                        );
-                                      }));
-                                }
+
+
                               },
                               child: Column(
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(20),
@@ -957,14 +928,14 @@ class _Home_ScreenState extends State<Home_Screen> {
                                         ]),
                                     height: 120,
                               width: MediaQuery.of(context).size.width  / 2.5,
-                                    child: SvgPicture.asset(
-                                      "assets/Heater service.svg",
+                                    child: Image.asset(
+                                      "assets/icons8-open-box-96.png",
                                       fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             bottomLeft: Radius.circular(20),
@@ -978,9 +949,9 @@ class _Home_ScreenState extends State<Home_Screen> {
                                         ]),
                                     height: 40,
                                     width: MediaQuery.of(context).size.width  / 2.5,
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
-                                        "Heater Services",
+                                        " رفع شكوى",
                                         style: TextStyle(
                                             fontSize: 15, color: Colors.black),
                                       ),
@@ -989,11 +960,11 @@ class _Home_ScreenState extends State<Home_Screen> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 15),
+                            // const SizedBox(width: 15),
                           ],
                         ),
                       ),
-                      SizedBox(height: 50),
+                      const SizedBox(height: 50),
                     ],
                   ),
                 ),

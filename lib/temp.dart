@@ -62,7 +62,7 @@ class Person_1 extends StatelessWidget {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage("assets/pic.jpg")),
+                          image: AssetImage("assets/profile.png")),
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       boxShadow: [
                         BoxShadow(
@@ -90,7 +90,7 @@ class Person_1 extends StatelessWidget {
           //         decoration: BoxDecoration(
           //             image: DecorationImage(
           //                 fit: BoxFit.cover,
-          //                 image: AssetImage("assets/pic.jpg")),
+          //                 image: AssetImage("assets/profile.png")),
           //             borderRadius: BorderRadius.all(Radius.circular(100)),
           //             boxShadow: [
           //               BoxShadow(
@@ -162,7 +162,7 @@ class Person_1 extends StatelessWidget {
           //             decoration: BoxDecoration(
           //                 image: DecorationImage(
           //                     fit: BoxFit.cover,
-          //                     image: AssetImage("assets/pic.jpg")),
+          //                     image: AssetImage("assets/profile.png")),
           //                 borderRadius:
           //                     BorderRadius.all(Radius.circular(100)),
           //                 boxShadow: [
@@ -219,7 +219,7 @@ class Person_1 extends StatelessWidget {
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: AssetImage("assets/pic.jpg")),
+                                        image: AssetImage("assets/profile.png")),
                                     borderRadius:
                                     BorderRadius.all(Radius.circular(100)),
                                     boxShadow: [
@@ -242,7 +242,7 @@ class Person_1 extends StatelessWidget {
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: AssetImage("assets/pic.jpg")),
+                                    image: AssetImage("assets/profile.png")),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(100)),
                                 boxShadow: [
@@ -306,7 +306,7 @@ class Person_1 extends StatelessWidget {
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(bottom: 17, left: 10),
                       border: InputBorder.none,
-                      hintText: "Type your message ",
+                      hintText: " أرسل نص أو صورة",
                       hintStyle:
                           TextStyle(fontSize: 10, color: Color(0xff97AABD)),
                       suffixIcon: SvgPicture.asset(

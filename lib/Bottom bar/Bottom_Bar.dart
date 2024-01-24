@@ -15,24 +15,24 @@ class Bottom_Bar extends StatefulWidget {
 
 class _Bottom_BarState extends State<Bottom_Bar> {
   static final List<Widget> _widgetOptions = <Widget>[
-    My_Orders(),
+    const My_Orders(),
     Home_Screen(),
-    Account(),
-    Messages(),
+    const Account(),
+    const Messages(),
 
-    Text(
+    const Text(
       'Index 1: Order',
       // style: optionStyle,
     ),
-    Text(
+    const Text(
       'Index 2: Home',
       // style: optionStyle,
     ),
-    Text(
+    const Text(
       'Index 3: Account',
       // style: optionStyle,
     ),
-    Text(
+    const Text(
       'Index 4: Account',
       // style: optionStyle,
     ),
@@ -77,10 +77,10 @@ class _Bottom_BarState extends State<Bottom_Bar> {
                 icon: SvgPicture.asset("assets/bottom bar Account.svg"),
                 label: 'Account',
               ),
-              BottomNavigationBarItem(
+              const BottomNavigationBarItem(
 
                 icon: Icon(Icons.chat,color: Colors.grey,),
-                label: 'Account',
+                label: 'Chat',
               ),
 
 

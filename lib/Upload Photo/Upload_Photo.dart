@@ -1,5 +1,6 @@
-import 'dart:io';
+// ignore_for_file: camel_case_types
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -62,11 +63,11 @@ class _Upload_PhotoState extends State<Upload_Photo> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           Align(
             alignment: Alignment.topLeft,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: Color(0xfff8cdaa),
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(32),
@@ -103,7 +104,7 @@ class _Upload_PhotoState extends State<Upload_Photo> {
                             fit: BoxFit.scaleDown,
                           )),
                     ),
-                    Text(
+                    const Text(
                       "Upload Photo",
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
@@ -112,12 +113,12 @@ class _Upload_PhotoState extends State<Upload_Photo> {
               ),
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           Container(
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(32),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.grey,
                     blurRadius: 3,
@@ -131,7 +132,7 @@ class _Upload_PhotoState extends State<Upload_Photo> {
                 .width / 1.3,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 // Image.asset("assets/Upload Camera Photo.png"),
                 SizedBox(width: 5),
                 Text(
@@ -141,30 +142,29 @@ class _Upload_PhotoState extends State<Upload_Photo> {
               ],
             ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           SizedBox(
             width: 130,
             height: 30,
             child: ElevatedButton(
                 onPressed: () {
                   cameraa();
-
                 },
                 style: ElevatedButton.styleFrom(
-                    primary: Color(0xff9C3587),
+                    primary: const Color(0xff9C3587),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32))),
-                child: Text(
+                child: const Text(
                   "Take Photo",
                   style: TextStyle(fontSize: 11, color: Colors.white),
                 )),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Container(
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(32),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.grey,
                     blurRadius: 3,
@@ -178,7 +178,7 @@ class _Upload_PhotoState extends State<Upload_Photo> {
                 .width / 1.3,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 // Image.asset("assets/upload gallery photo.png"),
                 SizedBox(width: 5),
                 Text(
@@ -188,7 +188,7 @@ class _Upload_PhotoState extends State<Upload_Photo> {
               ],
             ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           SizedBox(
             width: 130,
             height: 30,
@@ -201,10 +201,10 @@ class _Upload_PhotoState extends State<Upload_Photo> {
 
                 },
                 style: ElevatedButton.styleFrom(
-                    primary: Color(0xff9C3587),
+                    primary: const Color(0xff9C3587),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32))),
-                child: Text(
+                child: const Text(
                   "Choose Photo",
                   style: TextStyle(fontSize: 11, color: Colors.white),
                 )),

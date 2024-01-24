@@ -64,7 +64,7 @@ class Debit_Card extends StatelessWidget {
             child: Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "Card Holder",
+                "اسم حامل البطاقة",
                 style: TextStyle(
                     fontSize: 12,
                     color: Color(0xff8F92A1),
@@ -92,7 +92,7 @@ class Debit_Card extends StatelessWidget {
             child: Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "Card Number",
+                "رقم البطاقة",
                 style: TextStyle(
                     fontSize: 12,
                     color: Color(0xff8F92A1),
@@ -123,7 +123,7 @@ class Debit_Card extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: Text(
-                      "Expiry Date",
+                      "تاريخ الانتهاء",
                       style: TextStyle(
                           fontSize: 12,
                           color: Color(0xff8F92A1),

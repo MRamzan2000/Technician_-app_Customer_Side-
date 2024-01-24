@@ -11,7 +11,7 @@ class ApiServiceForSignIn {
   static Future<SignInResponse> signin(Map<String, dynamic> body) async {
 
 
-    const String URL = baseUrl + "costumersignin";
+    const String URL = baseUrl + "customersignin";
     final response = await http.post(Uri.parse(URL), headers: {"Content-Type": "application/json"}, body: json.encode(body));
     final String res = response.body;
 

@@ -1,19 +1,35 @@
+// @dart=2.9
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:technician_customer_side/Map/map.dart';
-import 'package:technician_customer_side/Meesages/Messages/Messages.dart';
-import 'package:technician_customer_side/Starting%20Pages/First_page.dart';
+
 
 import 'Bottom bar/Bottom_Bar.dart';
+import 'Sign In/Sign_In.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp( MaterialApp(
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  runApp( const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: MyApp(),
   ));
 }
+Future<void>firebaseMessagingBackgroundHandler(RemoteMessage message) async{
+  await Firebase.initializeApp();
+  print(message.notification.title.toString());
+  print(message.notification.body.toString());
+}
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
 
 
   @override
@@ -21,7 +37,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String myid = "";
+  String myId = "";
 
   @override
   void initState() {
@@ -32,19 +48,15 @@ class _MyAppState extends State<MyApp> {
   void initialize() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      myid = prefs.getString("id") ?? "";
+      myId = prefs.getString("id") ?? "";
     });
   }
-
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(body:
-    MapSample()
-
-
-    // myid == ""  ?  First_Page()  : Bottom_Bar()
+    myId == ""  ?  const Sign_In()  : const Bottom_Bar()
     );
   }
 }

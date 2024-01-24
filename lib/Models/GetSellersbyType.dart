@@ -13,6 +13,7 @@ class Seller {
   int? v;
   String? token;
   String? type;
+  String? access;
 
   Seller({
      this.id,
@@ -29,6 +30,7 @@ class Seller {
      this.v,
      this.type,
     this.token,
+    this.access
   });
 
   factory Seller.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class Seller {
       password: json['password'],
       phoneNumber: json['phonenumber'],
       city: json['city'],
+      access: json['access'],
       dateOfBirth: json['dateofbirth'],
       idOfIqama: json['idofiqama'],
       createdAt: DateTime.parse(json['createdAt']),

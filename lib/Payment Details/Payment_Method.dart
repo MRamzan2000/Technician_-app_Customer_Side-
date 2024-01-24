@@ -129,7 +129,7 @@ class Payment_Method extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 12, left: 15),
               child: Text(
-                "By STC pay",
+                " عبر STC pay",
                 style: TextStyle(fontSize: 15, color: Colors.black),
               ),
             ),
@@ -150,7 +150,7 @@ class Payment_Method extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32))),
                 child: Text(
-                  "Done",
+                  "تم",
                   style: TextStyle(fontSize: 11, color: Colors.white),
                 )),
           )

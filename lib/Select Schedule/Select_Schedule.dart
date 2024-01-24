@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:horizontal_center_date_picker/datepicker_controller.dart';
@@ -5,7 +7,6 @@ import 'package:horizontal_center_date_picker/horizontal_date_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:technician_customer_side/Upload%20Photo/Upload_Photo.dart';
 import 'package:intl/intl.dart';
-import '../Api/ApiServiceForStoringOrders.dart';
 
 class Select_Schedule extends StatefulWidget {
 
@@ -20,10 +21,11 @@ class Select_Schedule extends StatefulWidget {
 
 class _Select_ScheduleState extends State<Select_Schedule> {
   DateTime now = DateTime.now();
+  var yearFormat = DateFormat('yyyy').format(DateTime.now());
 
-  DatePickerController _datePickerController = DatePickerController();
+  final DatePickerController _datePickerController = DatePickerController();
   DateTime start = DateTime.now();
-  DateTime twoMonthsFromNow = DateTime.now().add(Duration(days: 30));
+  DateTime twoMonthsFromNow = DateTime.now().add(const Duration(days: 30));
 
   double value = 0;
   double value1 = 0;
@@ -49,16 +51,16 @@ void initState() {
   }
   @override
   Widget build(BuildContext context) {
-    // print(now);
+    log(yearFormat);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             Align(
               alignment: Alignment.topLeft,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Color(0xfff8cdaa),
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(32),
@@ -92,7 +94,7 @@ void initState() {
                               fit: BoxFit.scaleDown,
                             )),
                       ),
-                      Text(
+                      const Text(
                         "Select Schedule ",
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
@@ -101,9 +103,9 @@ void initState() {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Container(
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              decoration: const BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(
                     color: Colors.grey, blurRadius: 3, offset: Offset(1.0, 2.0))
               ]),
@@ -111,21 +113,21 @@ void initState() {
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Date",
+                        const Text(
+                          "التاريخ",
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                         Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(32),
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                   color: Colors.grey,
                                   blurRadius: 1,
@@ -135,13 +137,13 @@ void initState() {
                           width: 80,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children:  [
                               Text(
-                                "2023",
-                                style: TextStyle(
+                                yearFormat?? "2023",
+                                style: const TextStyle(
                                     fontSize: 10, color: Color(0xffB4B5B5)),
                               ),
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               // SvgPicture.asset("assets/Drop down.svg"),
                             ],
                           ),
@@ -149,7 +151,7 @@ void initState() {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
               HorizontalDatePickerWidget(
                 locale: 'en_AU',
                 startDate: start, // set start date to 30 days ago
@@ -184,170 +186,170 @@ void initState() {
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Time",
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                ),
-              ),
-            ),
-            SizedBox(height: 25),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 1,
-                          offset: Offset(1.0, 2.0),
-                        )
-                      ]),
-                  height: 60,
-                  width: 60,
-                  child: Center(
-                      child: Text(
-                        value.toInt().toString(),
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                  )),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  ":",
-                  style: TextStyle(fontSize: 17, color: Colors.black),
-                ),
-                SizedBox(width: 5),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 1,
-                          offset: Offset(1.0, 2.0),
-                        )
-                      ]),
-                  height: 60,
-                  width: 60,
-                  child: Center(
-                      child: Text(
-                        value1.toInt().toString(),
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                  )),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 1,
-                          offset: Offset(1.0, 2.0),
-                        )
-                      ]),
-                  height: 40,
-                  width: 40,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Center(
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(border: InputBorder.none),
-                        icon: SvgPicture.asset(
-                          "assets/Drop down.svg",
-                          fit: BoxFit.scaleDown,
-                        ),
-                        value: "AM",
-                        items: [
-                          DropdownMenuItem(
-                            child: Text(
-                              "AM",
-                              style: TextStyle(fontSize: 14, color: Colors.black),
-                            ),
-                            value: "AM",
-                          ),
-                          DropdownMenuItem(
-                            child: Text(
-                              "PM",
-                              style: TextStyle(fontSize: 14, color: Colors.black),
-                            ),
-                            value: "PM",
-                          ),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-
-                            am_pm = value!.toString();
-
-                          });
-                          print(value);
-                          print("changed");
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 40),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Hours",
-                  style: TextStyle(fontSize: 13, color: Colors.black),
-                ),
-              ),
-            ),
-            Slider(
-
-                thumbColor: Color(0xffF89F5B),
-                inactiveColor: Colors.grey,
-                activeColor: Color(0xff9C3587),
-                min: 0,
-                max: 12,
-                value: value,
-                onChanged: (n) {
-                  setState(() {
-                    value = n;
-                    print(value.toInt());
-                  });
-                }),
-            Padding(
-              padding: const EdgeInsets.only(left: 40),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Minutes",
-                  style: TextStyle(fontSize: 13, color: Colors.black),
-                ),
-              ),
-            ),
-            Slider(
-                thumbColor: Color(0xffF89F5B),
-                inactiveColor: Colors.grey,
-                activeColor: Color(0xff9C3587),
-                value: value1,
-                min: 0,
-                max: 60,
-                onChanged: (n) {
-                  setState(() {
-                    value1 = n;
-                  });
-                }),
-            SizedBox(height: 30,),
+            const SizedBox(height: 10),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 15),
+            //   child: Align(
+            //     alignment: Alignment.topLeft,
+            //     child: Text(
+            //       "Time",
+            //       style: TextStyle(fontSize: 16, color: Colors.black),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 25),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Container(
+            //       decoration: BoxDecoration(
+            //           color: Colors.white,
+            //           borderRadius: BorderRadius.circular(20),
+            //           boxShadow: const [
+            //             BoxShadow(
+            //               color: Colors.grey,
+            //               blurRadius: 1,
+            //               offset: Offset(1.0, 2.0),
+            //             )
+            //           ]),
+            //       height: 60,
+            //       width: 60,
+            //       child: Center(
+            //           child: Text(
+            //             value.toInt().toString(),
+            //         style: const TextStyle(fontSize: 14, color: Colors.black),
+            //       )),
+            //     ),
+            //     const SizedBox(width: 5),
+            //     const Text(
+            //       ":",
+            //       style: TextStyle(fontSize: 17, color: Colors.black),
+            //     ),
+            //     const SizedBox(width: 5),
+            //     Container(
+            //       decoration: BoxDecoration(
+            //           color: Colors.white,
+            //           borderRadius: BorderRadius.circular(20),
+            //           boxShadow: const [
+            //             BoxShadow(
+            //               color: Colors.grey,
+            //               blurRadius: 1,
+            //               offset: Offset(1.0, 2.0),
+            //             )
+            //           ]),
+            //       height: 60,
+            //       width: 60,
+            //       child: Center(
+            //           child: Text(
+            //             value1.toInt().toString(),
+            //         style: const TextStyle(fontSize: 14, color: Colors.black),
+            //       )),
+            //     ),
+            //     const SizedBox(width: 10),
+            //     Container(
+            //       decoration: BoxDecoration(
+            //           color: Colors.white,
+            //           borderRadius: BorderRadius.circular(15),
+            //           boxShadow: const [
+            //             BoxShadow(
+            //               color: Colors.grey,
+            //               blurRadius: 1,
+            //               offset: Offset(1.0, 2.0),
+            //             )
+            //           ]),
+            //       height: 40,
+            //       width: 40,
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(horizontal: 4),
+            //         child: Center(
+            //           child: DropdownButtonFormField(
+            //             decoration: const InputDecoration(border: InputBorder.none),
+            //             icon: SvgPicture.asset(
+            //               "assets/Drop down.svg",
+            //               fit: BoxFit.scaleDown,
+            //             ),
+            //             value: "AM",
+            //             items: const [
+            //               DropdownMenuItem(
+            //                 value: "AM",
+            //                 child: Text(
+            //                   "AM",
+            //                   style: TextStyle(fontSize: 14, color: Colors.black),
+            //                 ),
+            //               ),
+            //               DropdownMenuItem(
+            //                 value: "PM",
+            //                 child: Text(
+            //                   "PM",
+            //                   style: TextStyle(fontSize: 14, color: Colors.black),
+            //                 ),
+            //               ),
+            //             ],
+            //             onChanged: (value) {
+            //               setState(() {
+            //
+            //                 am_pm = value!.toString();
+            //
+            //               });
+            //               print(value);
+            //               print("changed");
+            //             },
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(height: 10),
+            // const Padding(
+            //   padding: EdgeInsets.only(left: 40),
+            //   child: Align(
+            //     alignment: Alignment.topLeft,
+            //     child: Text(
+            //       "Hours",
+            //       style: TextStyle(fontSize: 13, color: Colors.black),
+            //     ),
+            //   ),
+            // ),
+            // Slider(
+            //
+            //     thumbColor: const Color(0xffF89F5B),
+            //     inactiveColor: Colors.grey,
+            //     activeColor: const Color(0xff9C3587),
+            //     min: 0,
+            //     max: 12,
+            //     value: value,
+            //     onChanged: (n) {
+            //       setState(() {
+            //         value = n;
+            //         print(value.toInt());
+            //       });
+            //     }),
+            // const Padding(
+            //   padding: EdgeInsets.only(left: 40),
+            //   child: Align(
+            //     alignment: Alignment.topLeft,
+            //     child: Text(
+            //       "Minutes",
+            //       style: TextStyle(fontSize: 13, color: Colors.black),
+            //     ),
+            //   ),
+            // ),
+            // Slider(
+            //     thumbColor: const Color(0xffF89F5B),
+            //     inactiveColor: Colors.grey,
+            //     activeColor: const Color(0xff9C3587),
+            //     value: value1,
+            //     min: 0,
+            //     max: 60,
+            //     onChanged: (n) {
+            //       setState(() {
+            //         value1 = n;
+            //       });
+            //     }),
+            const SizedBox(height: 30,),
             Container(
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              decoration: const BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(
                   color: Colors.grey,
                   blurRadius: 3,
@@ -358,12 +360,12 @@ void initState() {
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
-                  SizedBox(height: 20),
-                  Text(
-                    "Upload your House Image",
+                  const SizedBox(height: 20),
+                  const Text(
+                    " ارفع صورة للمشكلة أو صورة باب البيت",
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(
@@ -375,7 +377,7 @@ void initState() {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(32),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.grey,
                               blurRadius: 3,
@@ -388,9 +390,9 @@ void initState() {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset("assets/uplooad pic.svg"),
-                          SizedBox(height: 10),
-                          Text(
-                            "Upload",
+                          const SizedBox(height: 10),
+                          const Text(
+                            "رفع",
                             style: TextStyle(fontSize: 14, color: Colors.black),
                           ),
                         ],

@@ -25,7 +25,7 @@ class LastMessages {
 class Message {
   final String? id;
   final String? text;
-  final int? createdAt;
+  final String? createdAt;
   String? receiverName;
   String? receiverId;
 
@@ -33,10 +33,18 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     print("Json data : " +  json.toString());
+if(json.containsKey('text')){
+  print("object");
+  return Message(
+    id: json['_id'],
+    text: json['text'],
+    createdAt: json['createdAt'],
+    receiverName: json['receiverName'], // set receiverName property here
+  );
+}
     return Message(
       id: json['_id'],
-      text: json['text'],
-      createdAt: int.parse(json['createdAt']),
+      createdAt: (json['createdAt']),
       receiverName: json['receiverName'], // set receiverName property here
     );
   }

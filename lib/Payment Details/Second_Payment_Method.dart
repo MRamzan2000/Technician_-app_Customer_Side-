@@ -181,7 +181,7 @@ class Second_Payment_Method extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 12, left: 15),
               child: Text(
-                "By STC pay",
+                "STC pay عبر ",
                 style: TextStyle(fontSize: 15, color: Colors.black),
               ),
             ),

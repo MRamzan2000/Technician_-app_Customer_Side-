@@ -69,7 +69,7 @@ class _TransactionsState extends State<Transactions> {
                           )),
                     ),
                     Text(
-                      "Transactions",
+                      "المدفوعات",
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ],
@@ -85,7 +85,7 @@ class _TransactionsState extends State<Transactions> {
                 if (snapshot.hasData) {
                   if( snapshot.data!.transactions.length == 0)
                     {
-                      return Center(child: Text("No Transtactions"),);
+                      return Center(child: Text("لا المدفوعات"),);
                     }
                   else {
                     return Expanded(

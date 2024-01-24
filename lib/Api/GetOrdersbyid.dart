@@ -13,8 +13,6 @@ class ApiServiceForGetOrders {
 
 
     final response = await http.get(Uri.parse('${baseUrl}customerOrders/${id}'));
-
-
     final String res = response.body;
     if (res != null) {
       try {

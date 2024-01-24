@@ -18,6 +18,7 @@ class ApiServiceForGetUserInfo {
     // print(id);
     String token = prefs.getString("token").toString();
     final response = await http.get(Uri.parse(URL));
+    print("this is the body: " + response.body);
     // final response = await http.post(Uri.parse(URL), headers: {"Content-Type": "application/json"}, body: json.encode(
     //     {
     //       "customerId": id
@@ -29,16 +30,17 @@ class ApiServiceForGetUserInfo {
       try {
 
         final jsonData = json.decode(res) as Map<String, dynamic>;
-        // print(jsonData);
+        print(jsonData["phonenumber"]);
 
          prefs.setString("firstname", jsonData["firstname"]).toString();
          prefs.setString("lastname", jsonData["lastname"]).toString();
-        prefs.setString("email", jsonData["email"]).toString();
          prefs.setString("phone", jsonData["phonenumber"]).toString();
-         prefs.setString("city", jsonData["city"]);
-        prefs.setString("dateofbirth", jsonData["dateofbirth"]);
-        prefs.setString("createdAt", jsonData["createdAt"]);
-        prefs.setString("city", jsonData["city"]);
+         prefs.setString("city", jsonData["city"]).toString();
+        prefs.setString("dateofbirth", jsonData["dateofbirth"]).toString();
+        prefs.setString("createdAt", jsonData["createdAt"]).toString();
+
+       String dateob =prefs.getString("dateofbirth")!;
+       print(dateob);
 
 
         return User.fromJson(jsonData);

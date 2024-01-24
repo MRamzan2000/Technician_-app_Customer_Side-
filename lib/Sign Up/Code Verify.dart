@@ -61,7 +61,7 @@ class _CodeVerifyState extends State<CodeVerify> {
                     : Text(value.error.toString()),
                 actions: [
                   CupertinoDialogAction(
-                    child: Text('Cancel'),
+                    child: Text(' إلغاء'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

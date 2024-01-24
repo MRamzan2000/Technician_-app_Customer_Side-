@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:http/http.dart' as http;
 
@@ -9,20 +11,20 @@ class ChatScreen extends StatefulWidget {
   final String otherUserId;
   final String name;
 
-  ChatScreen({required this.myUserId, required this.otherUserId,required this.name});
+  const ChatScreen({Key? key, required this.myUserId, required this.otherUserId,required this.name}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  TextEditingController _messageController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
   bool isConnected = false;
   String roomId=" ";
   late IO.Socket socket;
   int _page = 1;
   bool _isLoading = false;
-  List<Map<String, String>> _messages = [];
+  List<Map<dynamic, dynamic>> _messages = [];
   final _scrollController = ScrollController();
 
   String _lastMessageId = '';
@@ -35,7 +37,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
       try {
         final response = await http.get(
-          Uri.parse('https://dolphin-app-ldyyx.ondigitalocean.app/messages/${widget.myUserId}/${widget.otherUserId}/$_page/?lastMessageId=$_lastMessageId'),
+          Uri.parse('https://dolphin-app-toqsg.ondigitalocean.app/messages/${widget.myUserId}/${widget.otherUserId}/$_page'),
+          // Uri.parse('https://dolphin-app-ldyyx.ondigitalocean.app/messages/${widget.myUserId}/${widget.otherUserId}/$_page'),
           headers: {"Content-Type": "application/json"},
         );
         final data = jsonDecode(response.body);
@@ -44,9 +47,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
         // Check if we received any new messages
         if (messages.isNotEmpty) {
-          // Update the last message ID to the ID of the last message in the list
-
-
           setState(() {
             _messages.addAll(messages.map((message) {
               return Map<String, String>.from(message.map(
@@ -56,6 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
             _messages.sort((a, b) => b['createdAt']!.compareTo(a['createdAt'].toString()));
             _lastMessageId = messages.last['_id'];
             _isLoading = false;
+            _page++;
           });
         } else {
           // If we didn't receive any new messages, stop loading more messages
@@ -78,7 +79,8 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       print("Connecting");
       // Configure socket transports must be specified
-      socket = IO.io('https://dolphin-app-ldyyx.ondigitalocean.app/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
+      socket = IO.io('https://dolphin-app-toqsg.ondigitalocean.app/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
+      // socket = IO.io('https://dolphin-app-ldyyx.ondigitalocean.app/',IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build());
 
       socket.onConnect((_) {
         print('Connected');
@@ -100,7 +102,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     connectToServer();
-    print("Hello");
     _loadMessages();
     _scrollController.addListener(_scrollListener);
     if (widget.myUserId.compareTo(widget.otherUserId) < 0) {
@@ -127,6 +128,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _loadMessages();
     }
   }
+  File selectedImage = File('');
 
   @override
   void dispose() {
@@ -135,12 +137,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _handleIncomingMessage(data) {
-    print("Coming:${data}");
+    print("Coming:$data");
     setState(() {
       Map<String, String> message = {
         'senderId': data['senderId'],
         'receiverId': data['receiverId'],
         'text': data['text'].toString(),
+        'type':data['type'].toString(),
+        'image':data['image'].toString()
       };
       print(message);
       if(message['senderId']!=widget.myUserId){
@@ -148,42 +152,62 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     });
   }
+  String? Url;
 
-  void _sendMessage() {
+  // String base64Image = "";
+  Future<void> _sendMessage() async {
     String text = _messageController.text.trim();
-    if (text.isNotEmpty&&isConnected==true) {
-      Map<String, String> message = {
+    try{
+      var imageUploadRequest = http.MultipartRequest('POST', Uri.parse("https://dolphin-app-toqsg.ondigitalocean.app/upload"));
+      // var imageUploadRequest = http.MultipartRequest('POST', Uri.parse("https://dolphin-app-ldyyx.ondigitalocean.app/upload"));
+      imageUploadRequest.files.add(await http.MultipartFile.fromPath("image", selectedImage.path));
+      http.StreamedResponse response =   await imageUploadRequest.send();
+      final String res=await response.stream.bytesToString();
+      Map<String, dynamic> jsonData = json.decode(res) as Map<String, dynamic>;
+      Url = jsonData["message"];
+    }
+    catch(e){
+      print(e);
+    }
+    if (isConnected==true) {
+      Map<dynamic, dynamic> message = {
         'senderId': widget.myUserId,
         'receiverId': widget.otherUserId,
-        'text': text,
-        'roomId':roomId
+        'text':  text ,
+        'roomId':roomId,
+        "type" : selectedImage.path == "" ? "text" : "image",
+        "image" : selectedImage.path == "" ? "" : Url
       };
-      print("hellll${message}");
-      socket.emit('message', message);
+
+
+      print("hello$message");
+      // print("image: "+base64Image.toString(), );
+      socket.emit('message', message,);
+
       setState(() {
         // Add the new message to the beginning of the list
         _messages.insert(0, message);
       });
 
       _messageController.clear();
+      selectedImage = File("");
+
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           SizedBox(
             height: 60,
             child: Stack(children: [
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: Color(0xffF89F5B),
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(32),
@@ -213,26 +237,26 @@ class _ChatScreenState extends State<ChatScreen> {
                                 height: 20,
                                 width: 20,
                                 child: SvgPicture.asset(
-                                  "assets/Back Arrow.svg",
+                                  "assets/Back arrow.svg",
                                   fit: BoxFit.scaleDown,
                                 )),
                           ),
                           Text(
                             widget.name,
                             style:
-                            TextStyle(fontSize: 16, color: Colors.black),
+                            const TextStyle(fontSize: 16, color: Colors.black),
                           )
                         ],
                       ),
                     )),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 60, top: 6),
+                padding: const EdgeInsets.only(left: 60, top: 6),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage("assets/pic.jpg")),
+                          image: AssetImage("assets/profile.png")),
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       boxShadow: [
                         BoxShadow(
@@ -252,10 +276,16 @@ class _ChatScreenState extends State<ChatScreen> {
               controller: _scrollController,
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                Map<String, String> message = _messages[index];
+                Map<dynamic, dynamic> message = _messages[index];
                 bool isMyMessage = message['senderId'].toString()== widget.myUserId;
                 final alignment = isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start;
                 final messageColor = isMyMessage ? Colors.black : Colors.white;
+                String? url;
+                if(_messages[index]['type']=="image"){
+                  url=_messages[index]['image'];
+                  print("https://dolphin-app-toqsg.ondigitalocean.app//image/$url");
+                  // print("https://dolphin-app-ldyyx.ondigitalocean.app//image/$url");
+                }
                 return Row(
                   mainAxisAlignment: alignment,
                   children: [
@@ -266,10 +296,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: Row(
                             children: [
                               isMyMessage?Container():Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: AssetImage("assets/pic.jpg")),
+                                        image: AssetImage("assets/profile.png")),
                                     borderRadius: BorderRadius.all(Radius.circular(100)),
                                     boxShadow: [
                                       BoxShadow(
@@ -280,13 +310,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                 height: 30,
                                 width: 30,
                               ),
-                              SizedBox(width: 10),
                               Row(
                                 children: [
-                                  Container(
+                              _messages[index]['type']=='text'?Container(
                                     decoration: BoxDecoration(
-                                      color: isMyMessage?Color(0xffE2E2E2):Color(0xff9C3587),
-                                      borderRadius: BorderRadius.only(
+                                      color: isMyMessage?const Color(0xffE2E2E2):const Color(0xff9C3587),
+                                      borderRadius: const BorderRadius.only(
                                           bottomLeft: Radius.circular(12),
                                           topRight: Radius.circular(12),
                                           bottomRight: Radius.circular(12)),
@@ -302,17 +331,49 @@ class _ChatScreenState extends State<ChatScreen> {
                                           maxLines: 8, // Change this value as needed
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(fontSize: 12, color: messageColor),
-                                        ),
+                                        )
                                       ),
                                     ),
+                                  ):
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: isMyMessage?const Color(0xffE2E2E2):const Color(0xff9C3587),
+                                  borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(20),
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                      bottomRight: Radius.circular(20)),
+                                ),
+                                height: 50,
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: InkWell(
+                                  onTap: (){
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                              content: SizedBox(
+                                                  height: 340,width: 170,
+                                                  child:
+                                                  Image.network("https://dolphin-app-toqsg.ondigitalocean.app/image/$url",
+                                                  // Image.network("https://dolphin-app-ldyyx.ondigitalocean.app/image/$url",
+                                                    fit: BoxFit.cover,))),
+                                    );
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text("VIEW IMAGE"),
                                   ),
-                                  SizedBox(width: 10,)
+                                ),
+                              ),
+                                  const SizedBox(width: 10,)
                                 ],
-                              )
+                              ),
+                              const SizedBox(width: 10)
                             ],
                           ),
                         ),
-                        SizedBox(height: 10,),
+                        const SizedBox(height: 10,),
                       ],
                     )
                   ],
@@ -322,37 +383,118 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(32),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 3,
-                        offset: Offset(1.0, 2.0))
-                  ]),
-              height: 50,
-              width: MediaQuery.of(context).size.width / 1.1,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _messageController,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 17, left: 10),
-                      border: InputBorder.none,
-                      hintText: "Type your message ",
-                      hintStyle:
-                      TextStyle(fontSize: 10, color: Color(0xff97AABD)),
-                      suffixIcon: IconButton(onPressed: _sendMessage, icon: Icon(Icons.send),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(32),
+                        boxShadow: [
+                          const BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 3,
+                              offset: Offset(1.0, 2.0))
+                        ]),
+                    height: 50,
+                    width: MediaQuery.of(context).size.width / 1.1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _messageController,
+                        decoration: InputDecoration(
+                          // prefix: InkWell(
+                          //   onTap: () async {
+                          //     final ImagePicker picker = ImagePicker();
+                          //     final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
+                          //     if (photo != null) {
+                          //       setState(() {
+                          //         selectedImage = File(photo.path);
+                          //       });
+                          //
+                          //       // Read the image file as bytes
+                          //       List<int> imageBytes = await selectedImage.readAsBytes();
+                          //
+                          //       // Convert the image bytes to a base64-encoded string
+                          //        base64Image = base64Encode(imageBytes);
+                          //       _sendMessage();
+                          //
+                          //       // Use the base64Image as needed, for example, sending it to a server or displaying it in your UI
+                          //       print(base64Image);
+                          //     }
+                          //   },
+                          //   child: Icon(Icons.camera_alt),
+                          // ),
+                            contentPadding: const EdgeInsets.only(bottom: 17, left: 10),
+                            border: InputBorder.none,
+                            hintText: " أرسل نص أو صورة",
+                            hintStyle:
+                            const TextStyle(fontSize: 10, color: Color(0xff97AABD)),
+                            suffixIcon: IconButton(onPressed: _sendMessage, icon: const Icon(Icons.send),
 
-                      )),
+                            )),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                IconButton(
+                    onPressed: ()async {
+                      showModalBottomSheet(context: context,
+                          builder: (BuildContext context) {
+                            return SafeArea(
+                              child: new Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  new ListTile(
+                                    leading: new Icon(Icons.camera),
+                                    title: new Text('Camera'),
+                                    onTap: () {
+                                      getImageByCamera();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  new ListTile(
+                                    leading: new Icon(Icons.image),
+                                    title: new Text('Gallery'),
+                                    onTap: () {
+                                      getImageByGallery();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                      );
+
+                }, icon: const Icon(Icons.camera_alt)),
+
+              ],
             ),
           )
         ],
       ),
     );
+  }
+  Future getImageByCamera() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      setState(() {
+        selectedImage = File(photo.path);
+      });
+      _sendMessage();
+    }
+  }
+
+  Future getImageByGallery() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
+    if (photo != null) {
+      setState(() {
+        selectedImage = File(photo.path);
+      });
+      _sendMessage();
+    }
   }
 }
